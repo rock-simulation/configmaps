@@ -18,8 +18,8 @@
  *
  */
 
-#ifndef MARS_UTILS_CONFIG_DATA_H
-#define MARS_UTILS_CONFIG_DATA_H
+#ifndef CONFIG_DATA_H
+#define CONFIG_DATA_H
 
 #ifdef _PRINT_HEADER_
   #warning "ConfigData.h"
@@ -33,10 +33,7 @@
 
 #include "FIFOMap.h"
 
-#include "misc.h"
-
-namespace mars {
-  namespace utils {
+namespace config_maps {
 
     class ConfigMap;
  
@@ -588,9 +585,10 @@ namespace mars {
       }
       
     }; // end of class ConfigItem
+    
+    // only function used from misc.h
+    std::string getPathOfFile(const std::string &filename);
 
+  } // end of namespace config_maps
 
-  } // end of namespace utils
-} // end of namespace mars
-
-#endif // MARS_UTILS_CONFIG_DATA_H
+#endif // CONFIG_DATA_H

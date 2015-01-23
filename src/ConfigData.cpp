@@ -5,8 +5,7 @@
 #include <sstream>
 
 
-namespace mars {
-  namespace utils {
+namespace config_maps {
 
     using std::string;
     using std::endl;
@@ -143,7 +142,7 @@ namespace mars {
       }
       return vec;
     }
-    
+
     static ConfigMap parseConfigMapFromYamlNode(const YAML::Node &n) {
       ConfigMap configMap;
       for(YAML::Iterator it = n.begin(); it != n.end(); ++it) {
@@ -185,7 +184,7 @@ namespace mars {
       if(item.children.size())
         dumpConfigMapToYaml(emitter, item.children);
     }
-    
+
     static void dumpConfigVectorToYaml(YAML::Emitter &emitter,
                                        const ConfigVector &vec) {
       bool do_sequence = false;
@@ -225,6 +224,16 @@ namespace mars {
       }
       emitter << YAML::EndMap;
     }
+    
+    // utility function
+    std::string getPathOfFile(const std::string &filename) {
+      std::string path = "./";
+      size_t pos;
 
-  } // end of namespace utils
-} // end of namespace mars
+      if((pos = filename.rfind('/')) != std::string::npos) {
+        path = filename.substr(0, pos+1);
+      }
+      return path;
+    }
+
+} // end of namespace config_maps
