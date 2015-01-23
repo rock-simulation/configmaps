@@ -1,10 +1,8 @@
 <package>
-    <description brief="mars_utils">
-	This Library contains several useful utilities like a Mutex and Thread class.
+    <description brief="configmaps">
+	This library contains a C++ implementation of python dictionary-like containers - ConfigMaps.
     </description>
-    <depend package="eigen3" />
     <depend package="simulation/mars/scripts/cmake" />
-    <depend package="simulation/mars/common/lib_manager" />
     <depend package="external/yaml-cpp" />
     <tags>needs_opt</tags>
 </package>
