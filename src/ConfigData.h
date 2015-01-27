@@ -33,7 +33,11 @@
 
 #include "FIFOMap.h"
 
-namespace config_maps {
+namespace configmaps {
+
+    // only functions used from misc.h
+    std::string getPathOfFile(const std::string &filename);
+    std::string trim(const std::string& str);
 
     class ConfigMap;
  
@@ -585,10 +589,7 @@ namespace config_maps {
       }
       
     }; // end of class ConfigItem
-    
-    // only function used from misc.h
-    std::string getPathOfFile(const std::string &filename);
 
-  } // end of namespace config_maps
+  } // end of namespace configmaps
 
 #endif // CONFIG_DATA_H

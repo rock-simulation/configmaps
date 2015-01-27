@@ -31,8 +31,7 @@
 #include <iostream>
 #include <algorithm>
 
-namespace mars {
-  namespace utils {
+namespace configmaps {
 
     template <typename Key, typename T>
     class FIFOItem {
@@ -238,8 +237,7 @@ namespace mars {
       }
       return end();
     }
-
-  } // end of namespace utils
-} // end of namespace mars
+    
+} // end of namespace configmaps
 
 #endif /* MARS_UTILS_FIFO_MAP_H */

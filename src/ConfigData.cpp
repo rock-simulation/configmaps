@@ -5,7 +5,7 @@
 #include <sstream>
 
 
-namespace config_maps {
+namespace configmaps {
 
     using std::string;
     using std::endl;
@@ -225,7 +225,7 @@ namespace config_maps {
       emitter << YAML::EndMap;
     }
     
-    // utility function
+    // utility functions
     std::string getPathOfFile(const std::string &filename) {
       std::string path = "./";
       size_t pos;
@@ -235,5 +235,21 @@ namespace config_maps {
       }
       return path;
     }
+    
+    std::string trim(const std::string& str) {
+      int front_idx, back_idx, len;
 
-} // end of namespace config_maps
+      front_idx = 0;
+      back_idx = ( len = str.size() ) - 1;
+
+      while (isspace(str[front_idx]) && front_idx < len ) front_idx++;
+      while (isspace(str[back_idx]) && back_idx > 0 ) back_idx--;
+
+      if ( front_idx >= back_idx )
+        return "";
+      else
+        return str.substr(front_idx, back_idx-front_idx+1);
+    }
+
+} // end of namespace configmaps
+

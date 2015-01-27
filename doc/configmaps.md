@@ -1,4 +1,4 @@
-Config Maps {#config_maps}
+Config Maps {#configmaps}
 ===========
 
 ## Overview
