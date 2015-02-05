@@ -3,12 +3,9 @@ cmake_minimum_required(VERSION 2.6)
 project(configmaps)
 set(PROJECT_VERSION 1.0)
 set(PROJECT_DESCRIPTION "This library contains a C++ implementation of python dictionary-like containers - ConfigMaps.")
+include(scripts/cmake/configmaps.cmake)
 
 include(FindPkgConfig)
-include(${CMAKE_INSTALL_PREFIX}/cmake/mars.cmake)
-
-mars_defaults()
-define_module_info()
 
 pkg_check_modules(PKGCONFIG REQUIRED
         yaml-cpp
