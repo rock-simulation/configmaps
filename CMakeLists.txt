@@ -6,6 +6,10 @@ set(PROJECT_DESCRIPTION "This library contains a C++ implementation of python di
 
 include(FindPkgConfig)
 
+find_package(Rock)
+rock_find_cmake(Boost)
+
+
 pkg_check_modules(PKGCONFIG REQUIRED
         yaml-cpp
 )
