@@ -577,12 +577,12 @@ namespace configmaps {
         sValue = trim(sValue);
         if(sValue == "true" || sValue == "True" || sValue == "TRUE") {
           iValue = 1;
-          return true;
+          return parsed = true;
         }
 
         if(sValue == "false" || sValue == "False" || sValue == "FALSE") {
           iValue = 0;
-          return true;
+          return parsed = true;
         }
 
         return parsed = sscanf(sValue.c_str(), "%d", &iValue);
