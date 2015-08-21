@@ -56,6 +56,8 @@ namespace configmaps {
 
     void ConfigMap::recursiveLoad(ConfigMap *map, std::string path) {
       ConfigMap::iterator it = map->begin();
+      std::list<ConfigMap::iterator> eraseList;
+      std::list<ConfigMap::iterator>::iterator eraseIt;
       for(; it!=map->end(); ++it) {
         if(it->first == "URI") {
           fprintf(stderr, "ConfigMap::recursiveLoad: found uri: %s\n",
@@ -65,6 +67,7 @@ namespace configmaps {
           ConfigMap m2 = fromYamlFile(file, true);
           recursiveLoad(&m2, subPath);
           map->append(m2);
+          eraseList.push_back(it);
         }
         else {
           ConfigVector::iterator vIt = it->second.begin();
@@ -72,6 +75,9 @@ namespace configmaps {
             recursiveLoad(&vIt->children, path);
           }
         }
+      }
+      for(eraseIt=eraseList.begin(); eraseIt!=eraseList.end(); ++eraseIt) {
+        map->erase(*eraseIt);
       }
     }
 
