@@ -60,8 +60,10 @@ namespace configmaps {
       std::list<ConfigMap::iterator>::iterator eraseIt;
       for(; it!=map->end(); ++it) {
         if(it->first == "URI") {
+          /*
           fprintf(stderr, "ConfigMap::recursiveLoad: found uri: %s\n",
                   it->second[0].getString().c_str());
+          */
           std::string file = path + (std::string)it->second[0];
           std::string subPath = getPathOfFile(file);
           ConfigMap m2 = fromYamlFile(file, true);

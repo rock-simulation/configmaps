@@ -164,7 +164,8 @@ namespace configmaps {
     
     template<typename Key, typename T>
     void FIFOMap<Key, T>::erase(FIFOMap<Key, T>::iterator position) {
-      std::cerr << "FIFOMap::erase is untested" << std::endl;
+      // seems to work fine
+      // std::cerr << "FIFOMap::erase is untested" << std::endl;
       std::map<Key, T>::erase(position->first);
       insertOrder.erase(position);
     }
