@@ -1,1 +1,1 @@
-Documentation can be found at [doc](doc/configmaps).
+Documentation can be found at [doc](doc/configmaps.md).
