@@ -268,7 +268,8 @@ namespace configmaps {
         return defaultValue;
       }
 
-      // checks if the key is in the list, if not return the given default value
+      // checks if the key is in the list, if not add the given default value
+      // and return it
       template<typename T> T getOrCreate(const std::string &key,
                                          const T &defaultValue) {
         if(find(key) != end()) {
