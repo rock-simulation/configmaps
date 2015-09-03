@@ -46,8 +46,8 @@ Example program:
       map["value2"] = 3;
       printf("value2 modified: %d\n", value2);
 
-      std::string foo2 = map["foo"]["foo2"];
-      std::string foo3 = map["foo"][0]["foo3"];
+      std::string foo2 = (std::string)map["foo"]["foo2"];
+      std::string foo3 = (std::string)map["foo"][0]["foo3"];
 
       printf("%s\n", foo2.c_str());
       printf("%s\n", foo3.c_str());
@@ -58,6 +58,16 @@ Example program:
 
       map["blub"]["foo"] = "3.14";
       printf("blub/foo: %g\n", (double)map["blub"]["foo"]);
+
+
+      // if map contains the key "da" the map value is returned
+      // otherwise the second argument is returned
+      long unsigned da = map.get("da", 0lu)
+
+      // if map contains the key "da2" the map value is returned
+      // otherwise the second argument is added to the map and returned
+      // afterwards
+      long unsigned da2 = map.getOrCreate("da2", 0lu)
 
       map.toYamlFile("result.yml");
 

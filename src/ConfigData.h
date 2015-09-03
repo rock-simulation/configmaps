@@ -258,6 +258,26 @@ namespace configmaps {
                                     bool loadURI = false);
       static ConfigMap fromYamlString(const std::string &s);
       static void recursiveLoad(ConfigMap *map, std::string path);
+
+      // checks if the key is in the list, if not return the given default value
+      template<typename T> T get(const std::string &key,
+                                 const T &defaultValue) {
+        if(find(key) != end()) {
+          return (T)(*this)[key];
+        }
+        return defaultValue;
+      }
+
+      // checks if the key is in the list, if not return the given default value
+      template<typename T> T getOrCreate(const std::string &key,
+                                         const T &defaultValue) {
+        if(find(key) != end()) {
+          return (T)(*this)[key];
+        }
+        (*this)[key] = defaultValue;
+        return defaultValue;
+      }
+
     };
 
     // todo: support vector and quaternion
