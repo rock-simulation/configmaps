@@ -28,14 +28,14 @@ Yaml example file:
 
 Example program:
 
-    #include <mars/utils/ConfigData.h>
+    #include <configmaps/ConfigData.h>
 
     int main(int argc, char *argv[]) {
 
       // some ConfigMap test
-      mars::utils::ConfigMap map;
-      map = mars::utils::ConfigMap::fromYamlFile("test.yml");
-      mars::utils::ConfigVector::iterator it;
+      configmaps::ConfigMap map;
+      map = configmaps::ConfigMap::fromYamlFile("test.yml");
+      configmaps::ConfigVector::iterator it;
       for(it=map["list"].begin(); it!=map["list"].end(); ++it) {
         printf("list entry: %s\n", it->getString().c_str());
       }
@@ -62,12 +62,12 @@ Example program:
 
       // if map contains the key "da" the map value is returned
       // otherwise the second argument is returned
-      long unsigned da = map.get("da", 0lu)
+      long unsigned da = map.get("da", 0lu);
 
       // if map contains the key "da2" the map value is returned
       // otherwise the second argument is added to the map and returned
       // afterwards
-      long unsigned da2 = map.getOrCreate("da2", 0lu)
+      long unsigned da2 = map.getOrCreate("da2", 0lu);
 
       map.toYamlFile("result.yml");
 

@@ -196,11 +196,11 @@ namespace configmaps {
     static void dumpConfigVectorToYaml(YAML::Emitter &emitter,
                                        const ConfigVector &vec) {
       bool do_sequence = false;
-      if(vec.size() == 1){
-        if (vec.begin()->children.size() > 1){
-          do_sequence = true;
-        }
-      }
+      // if(vec.size() == 1){
+      //   if (vec.begin()->children.size() > 1){
+      //     do_sequence = true;
+      //   }
+      // }
       if(vec.size() > 1 || do_sequence) {
         emitter << YAML::BeginSeq;
       }
