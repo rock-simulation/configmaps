@@ -177,8 +177,8 @@ namespace configmaps {
       std::string s = item.toString();
 
       if(!s.empty() && item.children.size()) {
-        fprintf(stderr, "%s: To dump to yaml file it is not allowed to have a item value and map at the same time.\n",
-                item.getParentName().c_str());
+        fprintf(stderr, "%s::%s : To dump to yaml file it is not allowed to have a item value and map at the same time.\n",
+                item.getParentName().c_str(), s.c_str());
         assert(false);
       }
       else {

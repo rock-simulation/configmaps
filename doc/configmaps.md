@@ -91,6 +91,15 @@ result.yml:
     blub:
       foo: 3.14
 
+more syntax examples:
+
+     double inputs[4] = {1, 2, 3, 4};
+     for(int i=0; i<4; ++i) {
+       for(int n=0; n<4; ++n) {
+         map["unit_tests"][i]["inputs"] << inputs[n];
+       }
+     }
+
 
 \[26.08.2014\]
 

@@ -197,6 +197,46 @@ namespace configmaps {
         return *this;
       }
 
+      ConfigVectorTemplate& operator<<(const int& v) {
+        *this << T(v);
+        return *this;
+      }
+
+      ConfigVectorTemplate& operator<<(const bool& v) {
+        *this << T(v);
+        return *this;
+      }
+
+      ConfigVectorTemplate& operator<<(const unsigned int& v) {
+        *this << T(v);
+        return *this;
+      }
+
+      ConfigVectorTemplate& operator<<(const double &v) {
+        *this << T(v);
+        return *this;
+      }
+
+      ConfigVectorTemplate& operator<<(const unsigned long& v) {
+        *this << T(v);
+        return *this;
+      }
+
+      ConfigVectorTemplate& operator<<(const std::string& v) {
+        *this << T(v);
+        return *this;
+      }
+
+      ConfigVectorTemplate& operator<<(const char* v) {
+        *this << T(v);
+        return *this;
+      }
+
+      ConfigVectorTemplate& operator<<(const ConfigMap &v) {
+        *this << T(v);
+        return *this;
+      }
+
       operator int () {
         return (*this)[0].getInt();
       }
@@ -598,12 +638,12 @@ namespace configmaps {
         sValue = trim(sValue);
         if(sValue == "true" || sValue == "True" || sValue == "TRUE") {
           iValue = 1;
-          return true;
+          return parsed = true;
         }
 
         if(sValue == "false" || sValue == "False" || sValue == "FALSE") {
           iValue = 0;
-          return true;
+          return parsed = true;
         }
 
         return parsed = sscanf(sValue.c_str(), "%d", &iValue);
