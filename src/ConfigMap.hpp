@@ -58,6 +58,7 @@ namespace configmaps {
       return w;
     }
 
+    bool hasKey(std::string key);
     void toYamlStream(std::ostream &out) const;
     void toYamlFile(const std::string &filename) const;
     std::string toYamlString() const;

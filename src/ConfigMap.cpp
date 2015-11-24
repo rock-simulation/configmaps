@@ -325,4 +325,8 @@ namespace configmaps {
         return str.substr(front_idx, back_idx-front_idx+1);
     }
 
+  bool ConfigMap::hasKey(std::string key) {
+    return (find(key) != end());
+  }
+
 } // end of namespace configmaps

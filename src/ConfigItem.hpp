@@ -67,6 +67,12 @@ namespace configmaps {
 
     operator const ConfigBase& () const {return *item;}
     operator ConfigBase& () {return *item;}
+    operator ConfigMap& ();
+    operator ConfigMap* ();
+    operator ConfigVector& ();
+    operator ConfigVector* ();
+    operator ConfigAtom& ();
+    operator ConfigAtom* ();
 
     void setParentName(std::string s) {
       parentName = s;
@@ -75,9 +81,9 @@ namespace configmaps {
       }
     }
 
-    bool isAtom();
-    bool isMap();
-    bool isVector();
+    bool isAtom() const;
+    bool isMap() const;
+    bool isVector() const;
 
     /* Atom types:
      *  - int
@@ -102,7 +108,7 @@ namespace configmaps {
     ConfigItem& operator=(const char* v);
     ConfigItem& operator=(bool);
     const char* c_str();
-    std::string toString();
+    std::string toString() const;
     // deprecated atom function
     std::string getString();
 
@@ -122,10 +128,25 @@ namespace configmaps {
     size_t append(const ConfigItem &item);
     ConfigItem& operator<<(const ConfigItem &item);
     ConfigItem& operator<<(const ConfigAtom &item);
+
+    template<typename T>
+    ConfigItem& operator<<(const T &value) {
+      return *this << (ConfigItem)ConfigAtom(value);
+    }
+
     ConfigItem& operator+=(const ConfigItem &item);
     ConfigItem& operator+=(const ConfigAtom &item);
+    template<typename T>
+    ConfigItem& operator+=(const T &value) {
+      return *this += (ConfigItem)ConfigAtom(value);
+    }
 
-    size_t size();
+    template<typename T>
+    void push_back(const T &value) {
+      *this << (ConfigItem)ConfigAtom(value);
+    }
+
+    size_t size() const;
 
   private:
     ConfigBase *item;

@@ -49,11 +49,11 @@ namespace configmaps {
     fprintf(stderr, "new d %lx %lx\n", (unsigned long)this->item, (unsigned long)this);
 #endif
   }
-  
+
   ConfigItem& ConfigItem::operator=(const ConfigItem& item) {
     return *this = *item.item;
   }
-  
+
   ConfigItem& ConfigItem::operator=(const ConfigBase& item) {
     if(this->item) {
 #ifdef VERBOSE
@@ -89,14 +89,14 @@ namespace configmaps {
 #endif
     return *this;
   }
-  
+
   ConfigItem::~ConfigItem() {
 #ifdef VERBOSE
     fprintf(stderr, "delete %lx\n", (unsigned long)item);
 #endif
     delete item;
   }
-  
+
   std::vector<ConfigItem>::iterator ConfigItem::begin() {
     if(!item) {
       item = new ConfigVector();
@@ -161,7 +161,7 @@ namespace configmaps {
     return (find(key) != endMap());
   }
 
-  bool ConfigItem::isAtom() {
+  bool ConfigItem::isAtom() const {
     if(item) {
       ConfigAtom *m = dynamic_cast<ConfigAtom*>(item);
       if(m) return true;
@@ -169,7 +169,7 @@ namespace configmaps {
     return false;
   }
 
-  bool ConfigItem::isMap() {
+  bool ConfigItem::isMap() const {
     if(item) {
       ConfigMap *m = dynamic_cast<ConfigMap*>(item);
       if(m) return true;
@@ -177,12 +177,72 @@ namespace configmaps {
     return false;
   }
 
-  bool ConfigItem::isVector() {
+  bool ConfigItem::isVector() const {
     if(item) {
       ConfigVector *m = dynamic_cast<ConfigVector*>(item);
       if(m) return true;
     }
     return false;
+  }
+
+  ConfigItem::operator ConfigMap& () {
+    if(!item) {
+      item = new ConfigMap();
+      item->setParentName(parentName);
+    }
+    ConfigMap *m = dynamic_cast<ConfigMap*>(item);
+    if(m) return *m;
+    throw 2;
+  }
+
+  ConfigItem::operator ConfigMap* () {
+    if(!item) {
+      item = new ConfigMap();
+      item->setParentName(parentName);
+    }
+    ConfigMap *m = dynamic_cast<ConfigMap*>(item);
+    if(m) return m;
+    throw 2;
+  }
+
+  ConfigItem::operator ConfigVector& () {
+    if(!item) {
+      item = new ConfigVector();
+      item->setParentName(parentName);
+    }
+    ConfigVector *m = dynamic_cast<ConfigVector*>(item);
+    if(m) return *m;
+    throw 2;
+  }
+
+  ConfigItem::operator ConfigVector* () {
+    if(!item) {
+      item = new ConfigVector();
+      item->setParentName(parentName);
+    }
+    ConfigVector *m = dynamic_cast<ConfigVector*>(item);
+    if(m) return m;
+    throw 2;
+  }
+
+  ConfigItem::operator ConfigAtom& () {
+    if(!item) {
+      item = new ConfigAtom();
+      item->setParentName(parentName);
+    }
+    ConfigAtom *m = dynamic_cast<ConfigAtom*>(item);
+    if(m) return *m;
+    throw 2;
+  }
+
+  ConfigItem::operator ConfigAtom* () {
+    if(!item) {
+      item = new ConfigAtom();
+      item->setParentName(parentName);
+    }
+    ConfigAtom *m = dynamic_cast<ConfigAtom*>(item);
+    if(m) return m;
+    throw 2;
   }
 
   ConfigItem::operator int () {
@@ -422,17 +482,15 @@ namespace configmaps {
     return getString().c_str();
   }
 
-  std::string ConfigItem::toString() {
-    if(!item) {
-      item = new ConfigAtom();
-      item->setParentName(parentName);
+  std::string ConfigItem::toString() const {
+    if(item) {
+      ConfigAtom *m = dynamic_cast<ConfigAtom*>(item);
+      if(m) return m->toString();
     }
-    ConfigAtom *m = dynamic_cast<ConfigAtom*>(item);
-    if(m) return m->toString();
     throw 2;
   }
 
-  size_t ConfigItem::size() {
+  size_t ConfigItem::size() const {
     if(item) {
       ConfigVector *v = dynamic_cast<ConfigVector*>(item);
       if(v) return v->size();
