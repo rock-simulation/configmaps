@@ -28,6 +28,7 @@
 
 #include <string>
 #include <vector>
+#include "FIFOMap.h"
 
 namespace configmaps {
 
@@ -35,7 +36,7 @@ namespace configmaps {
   class ConfigVector;
   class ConfigAtom;
   class ConfigItem;
-  
+
   class ConfigBase {
   public:
     virtual ~ConfigBase() {}
@@ -74,7 +75,9 @@ namespace configmaps {
       }
     }
 
-    const char* c_str();
+    bool isAtom();
+    bool isMap();
+    bool isVector();
 
     /* Atom types:
      *  - int
@@ -98,6 +101,8 @@ namespace configmaps {
     ConfigItem& operator=(std::string &v);
     ConfigItem& operator=(const char* v);
     ConfigItem& operator=(bool);
+    const char* c_str();
+    std::string toString();
     // deprecated atom function
     std::string getString();
 
@@ -106,6 +111,8 @@ namespace configmaps {
     ConfigItem& operator[](const char* v);
     FIFOMap<std::string, ConfigItem>::iterator beginMap();
     FIFOMap<std::string, ConfigItem>::iterator endMap();
+    FIFOMap<std::string, ConfigItem>::iterator find(std::string key);
+    bool hasKey(std::string key);
 
     // vector access
     ConfigItem& operator[](unsigned long v);
@@ -117,6 +124,8 @@ namespace configmaps {
     ConfigItem& operator<<(const ConfigAtom &item);
     ConfigItem& operator+=(const ConfigItem &item);
     ConfigItem& operator+=(const ConfigAtom &item);
+
+    size_t size();
 
   private:
     ConfigBase *item;

@@ -142,7 +142,47 @@ namespace configmaps {
     if(v) {
       return v->end();
     }
-    return FIFOMap<std::string, ConfigItem>::iterator();
+    throw 2;
+  }
+
+  FIFOMap<std::string, ConfigItem>::iterator ConfigItem::find(std::string key) {
+    if(!item) {
+      item = new ConfigMap();
+      item->setParentName(parentName);
+    }
+    ConfigMap *v = dynamic_cast<ConfigMap*>(item);
+    if(v) {
+      return v->find(key);
+    }
+    throw 2;
+  }
+
+  bool ConfigItem::hasKey(std::string key) {
+    return (find(key) != endMap());
+  }
+
+  bool ConfigItem::isAtom() {
+    if(item) {
+      ConfigAtom *m = dynamic_cast<ConfigAtom*>(item);
+      if(m) return true;
+    }
+    return false;
+  }
+
+  bool ConfigItem::isMap() {
+    if(item) {
+      ConfigMap *m = dynamic_cast<ConfigMap*>(item);
+      if(m) return true;
+    }
+    return false;
+  }
+
+  bool ConfigItem::isVector() {
+    if(item) {
+      ConfigVector *m = dynamic_cast<ConfigVector*>(item);
+      if(m) return true;
+    }
+    return false;
   }
 
   ConfigItem::operator int () {
@@ -381,5 +421,25 @@ namespace configmaps {
   const char* ConfigItem::c_str() {
     return getString().c_str();
   }
-  
+
+  std::string ConfigItem::toString() {
+    if(!item) {
+      item = new ConfigAtom();
+      item->setParentName(parentName);
+    }
+    ConfigAtom *m = dynamic_cast<ConfigAtom*>(item);
+    if(m) return m->toString();
+    throw 2;
+  }
+
+  size_t ConfigItem::size() {
+    if(item) {
+      ConfigVector *v = dynamic_cast<ConfigVector*>(item);
+      if(v) return v->size();
+      ConfigMap *m = dynamic_cast<ConfigMap*>(item);
+      if(m) return v->size();
+    }
+    throw 2;
+  }
+
 } // end of namespace configmaps
