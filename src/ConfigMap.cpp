@@ -1,28 +1,34 @@
-#include "ConfigData.h"
+#include "ConfigMap.hpp"
 
 #include <yaml-cpp/yaml.h>
 #include <fstream>
 #include <sstream>
 
+#include "ConfigAtom.hpp"
+#include "ConfigVector.hpp"
+
+//#define VERBOSE
 
 namespace configmaps {
 
-    using std::string;
-    using std::endl;
+  using std::string;
+  using std::endl;
 
-    /************************
-     * Implementation
-     ************************/
+  /************************
+   * Implementation
+   ************************/
 
-    static ConfigItem parseConfigItemFromYamlNode(const YAML::Node &n);
-    static ConfigVector parseConfigVectorFromYamlNode(const YAML::Node &n);
-    static ConfigMap parseConfigMapFromYamlNode(const YAML::Node &n);
-    static void dumpConfigItemToYaml(YAML::Emitter &emitter,
-                                     const ConfigItem &item);
-    static void dumpConfigVectorToYaml(YAML::Emitter &emitter,
-                                       const ConfigVector &vec);
-    static void dumpConfigMapToYaml(YAML::Emitter &emitter,
-                                    const ConfigMap &configMap);
+  static ConfigAtom parseConfigAtomFromYamlNode(const YAML::Node &n);
+  static ConfigVector parseConfigVectorFromYamlNode(const YAML::Node &n);
+  static ConfigMap parseConfigMapFromYamlNode(const YAML::Node &n);
+  static void dumpConfigItemToYaml(YAML::Emitter &emitter,
+                                   const ConfigBase &item);
+  static void dumpConfigAtomToYaml(YAML::Emitter &emitter,
+                                   const ConfigAtom &item);
+  static void dumpConfigVectorToYaml(YAML::Emitter &emitter,
+                                     const ConfigVector &vec);
+  static void dumpConfigMapToYaml(YAML::Emitter &emitter,
+                                  const ConfigMap &configMap);
 
 
 
@@ -34,7 +40,7 @@ namespace configmaps {
           return parseConfigMapFromYamlNode(doc);
         } else {
           fprintf(stderr,
-                  "CFGManager::ConfigMapFromYaml currently only supports "
+                  "ConfigMap::ConfigMapFromYaml currently only supports "
                   "mapping types at the root level. please contact the "
                   "developers if you need support for other types.\n");
           return ConfigMap();
@@ -54,32 +60,41 @@ namespace configmaps {
       return map;
     }
 
-    void ConfigMap::recursiveLoad(ConfigMap *map, std::string path) {
-      ConfigMap::iterator it = map->begin();
-      std::list<ConfigMap::iterator> eraseList;
-      std::list<ConfigMap::iterator>::iterator eraseIt;
-      for(; it!=map->end(); ++it) {
-        if(it->first == "URI") {
-          /*
-          fprintf(stderr, "ConfigMap::recursiveLoad: found uri: %s\n",
-                  it->second[0].getString().c_str());
-          */
-          std::string file = path + (std::string)it->second[0];
-          std::string subPath = getPathOfFile(file);
-          ConfigMap m2 = fromYamlFile(file, true);
-          recursiveLoad(&m2, subPath);
-          map->append(m2);
-          eraseList.push_back(it);
-        }
-        else {
-          ConfigVector::iterator vIt = it->second.begin();
-          for(;vIt!=it->second.end(); ++vIt) {
-            recursiveLoad(&vIt->children, path);
+    void ConfigMap::recursiveLoad(ConfigBase *item, std::string path) {
+      ConfigMap *map = dynamic_cast<ConfigMap*>(item);
+      if(map) {
+        ConfigMap::iterator it = map->begin();
+        std::list<ConfigMap::iterator> eraseList;
+        std::list<ConfigMap::iterator>::iterator eraseIt;
+        for(; it!=map->end(); ++it) {
+          if(it->first == "URI") {
+            /*
+              fprintf(stderr, "ConfigMap::recursiveLoad: found uri: %s\n",
+              it->second[0].getString().c_str());
+            */
+            std::string file = path + (std::string)it->second;
+            std::string subPath = getPathOfFile(file);
+            ConfigMap m2 = fromYamlFile(file, true);
+            recursiveLoad(&m2, subPath);
+            map->append(m2);
+            eraseList.push_back(it);
+          }
+          else {
+            recursiveLoad(&((ConfigBase&)it->second), path);
           }
         }
+        for(eraseIt=eraseList.begin(); eraseIt!=eraseList.end(); ++eraseIt) {
+          map->erase(*eraseIt);
+        }
       }
-      for(eraseIt=eraseList.begin(); eraseIt!=eraseList.end(); ++eraseIt) {
-        map->erase(*eraseIt);
+      else {
+        ConfigVector *v = dynamic_cast<ConfigVector*>(item);
+        if(v) {
+          ConfigVector::iterator it = v->begin();
+          for(; it!= v->end(); ++it) {
+            recursiveLoad(&((ConfigBase&)*it), path);
+          }
+        }
       }
     }
 
@@ -122,12 +137,15 @@ namespace configmaps {
      ***************************/
 
 
-    static ConfigItem parseConfigItemFromYamlNode(const YAML::Node &n) {
-      ConfigItem item;
+    static ConfigAtom parseConfigAtomFromYamlNode(const YAML::Node &n) {
+      ConfigAtom item;
       if(n.Type() == YAML::NodeType::Scalar) {
         std::string s;
         n.GetScalar(s);
         item.setUnparsedString(s);
+#ifdef VERBOSE
+        fprintf(stderr, "parsed atom: %s\n", s.c_str());
+#endif
       }
       return item;
     }
@@ -136,14 +154,15 @@ namespace configmaps {
       ConfigVector vec;
       if(n.Type() == YAML::NodeType::Sequence) {
         YAML::Iterator it;
-        for(it = n.begin(); it != n.end(); ++it) {
-          ConfigItem item;
+        ConfigItem item;
+          for(it = n.begin(); it != n.end(); ++it) {
           if(it->Type() == YAML::NodeType::Scalar) {
-            item = parseConfigItemFromYamlNode(*it);
+            ConfigAtom atom = parseConfigAtomFromYamlNode(*it);
+            item = atom;
           } else if(it->Type() == YAML::NodeType::Sequence) {
-            item[""] = parseConfigVectorFromYamlNode(*it);
+            item = parseConfigVectorFromYamlNode(*it);
           } else if(it->Type() == YAML::NodeType::Map) {
-            item.children = parseConfigMapFromYamlNode(*it);
+            item = parseConfigMapFromYamlNode(*it);
           }
           vec.push_back(item);
         }
@@ -154,14 +173,22 @@ namespace configmaps {
     static ConfigMap parseConfigMapFromYamlNode(const YAML::Node &n) {
       ConfigMap configMap;
       for(YAML::Iterator it = n.begin(); it != n.end(); ++it) {
+        std::string s = it.first().to<std::string>();
+#ifdef VERBOSE
+        fprintf(stderr, "key: %s\n", s.c_str());
+#endif
         if(it.second().Type() == YAML::NodeType::Scalar) {
-          configMap[it.first().to<std::string>()].push_back(parseConfigItemFromYamlNode(it.second()));
+          ConfigAtom atom = parseConfigAtomFromYamlNode(it.second());
+          ConfigItem &w = configMap[it.first().to<std::string>()];
+#ifdef VERBOSE
+          fprintf(stderr, "that: %lx\n", &w);
+#endif
+          w = atom;
+          //configMap[it.first().to<std::string>()] = atom;
         } else if(it.second().Type() == YAML::NodeType::Sequence) {
           configMap[it.first().to<std::string>()] = parseConfigVectorFromYamlNode(it.second());
         } else if(it.second().Type() == YAML::NodeType::Map) {
-          ConfigItem item;
-          item.children = parseConfigMapFromYamlNode(it.second());
-          configMap[it.first().to<std::string>()].push_back(item);
+          configMap[it.first().to<std::string>()] = parseConfigMapFromYamlNode(it.second());
         } else if(it.second().Type() == YAML::NodeType::Null) {
           continue;
         } else {
@@ -172,8 +199,8 @@ namespace configmaps {
       return configMap;
     }
 
-    static void dumpConfigItemToYaml(YAML::Emitter &emitter,
-                                     const ConfigItem &item) {
+    static void dumpConfigAtomToYaml(YAML::Emitter &emitter,
+                                     const ConfigAtom &item) {
       std::string s = item.toString();
 
       if(!s.empty() && item.children.size()) {
@@ -186,11 +213,11 @@ namespace configmaps {
           emitter << "";
         }
       }
-
+#ifdef VERBOSE
+      fprintf(stderr, "dump: %s\n", s.c_str());
+#endif
       if(!s.empty())
         emitter << s;
-      if(item.children.size())
-        dumpConfigMapToYaml(emitter, item.children);
     }
 
     static void dumpConfigVectorToYaml(YAML::Emitter &emitter,
@@ -201,9 +228,10 @@ namespace configmaps {
       //     do_sequence = true;
       //   }
       // }
-      if(vec.size() > 1 || do_sequence) {
-        emitter << YAML::BeginSeq;
-      }
+
+      //if(vec.size() > 1 || do_sequence) {
+      emitter << YAML::BeginSeq;
+      //}
       if(!(emitter.good() && 1)) {
         std::string s = vec.getParentName();
         fprintf(stderr, "problem with ConfigVector for: %s\n",
@@ -211,10 +239,45 @@ namespace configmaps {
       }
       assert(emitter.good() && 1);
       for(unsigned int i = 0; i < vec.size(); ++i) {
-        dumpConfigItemToYaml(emitter, vec[i]);
+        const ConfigItem &w = vec[i];
+        const ConfigBase &item = w;
+        dumpConfigItemToYaml(emitter, item);
       }
-      if(vec.size() > 1 || do_sequence) {
-        emitter << YAML::EndSeq;
+      //if(vec.size() > 1 || do_sequence) {
+      emitter << YAML::EndSeq;
+      //}
+    }
+
+    static void dumpConfigItemToYaml(YAML::Emitter &emitter,
+                                     const ConfigBase &configItem) {
+      //std::string s = ((const ConfigAtom*)&configItem)->toString();
+#ifdef VERBOSE
+      fprintf(stderr, "try: %s\n", configItem.getParentName().c_str());
+#endif
+      const ConfigAtom *a = dynamic_cast<const ConfigAtom*>(&configItem);
+      if(a) {
+#ifdef VERBOSE
+        fprintf(stderr, "have atom\n");
+#endif
+        dumpConfigAtomToYaml(emitter, *a);
+      }
+      else {
+        const ConfigVector *v = dynamic_cast<const ConfigVector*>(&configItem);
+        if(v) {
+#ifdef VERBOSE
+          fprintf(stderr, "have vector\n");
+#endif
+          dumpConfigVectorToYaml(emitter, *v);
+        }
+        else {
+          const ConfigMap *m = dynamic_cast<const ConfigMap*>(&configItem);
+          if(m) {
+#ifdef VERBOSE
+            fprintf(stderr, "have map\n");
+#endif
+            dumpConfigMapToYaml(emitter, *m);
+          }
+        }
       }
     }
 
@@ -228,11 +291,14 @@ namespace configmaps {
           fprintf(stderr, "problem with ConfigMap for: %s\n", it->first.c_str());
         }
         emitter << YAML::Value;
-        dumpConfigVectorToYaml(emitter, it->second);
+#ifdef VERBOSE
+        fprintf(stderr, "dump map: %s\n", it->first.c_str());
+#endif
+        dumpConfigItemToYaml(emitter, it->second);
       }
       emitter << YAML::EndMap;
     }
-    
+
     // utility functions
     std::string getPathOfFile(const std::string &filename) {
       std::string path = "./";
@@ -243,7 +309,7 @@ namespace configmaps {
       }
       return path;
     }
-    
+
     std::string trim(const std::string& str) {
       int front_idx, back_idx, len;
 
@@ -260,4 +326,3 @@ namespace configmaps {
     }
 
 } // end of namespace configmaps
-

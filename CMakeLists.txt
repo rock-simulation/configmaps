@@ -14,10 +14,15 @@ link_directories(${PKGCONFIG_LIBRARY_DIRS})
 add_definitions(${PKGCONFIG_CFLAGS_OTHER})  #flags excluding the ones with -I
 
 set(SOURCES 
-    src/ConfigData.cpp
+    src/ConfigMap.cpp
+    src/ConfigItem.cpp
 )
 set(HEADERS
     src/ConfigData.h
+    src/ConfigMap.hpp
+    src/ConfigVector.hpp
+    src/ConfigItem.hpp
+    src/ConfigAtom.hpp
     src/FIFOMap.h
 )
 
