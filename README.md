@@ -11,6 +11,7 @@ needed to compile againt both branches are listed below:
 
 Remove use of the children property:
 
+```
    map["foo"][0].children["blub"] = "test";
    ->  map["foo"]["blub"] = "test";
 
@@ -22,24 +23,27 @@ Remove use of the children property:
    A hasKey() function is added:
    map.hasKey("foo");          // for map["foo"]
    map["foo"].hasKey("blub");  // for map["foo"]["blub"]
-
+```
 
 Remove use of getInt(), getULong(), etc. methods:
 
+```
    map["foo"][0].getInt();
    ->  map["foo"];
    map["foo"][0].getStirng();
    ->  (std::string)map["foo"];
-
+```
 
 Do not use the first vector element to access the first item:
 
+```
    int i = map["foo"][0];
    ->  int i = map["foo"]
-
+```
 
 Operators provide pointers to subelements:
 
+```
    ConfigMap &m = map["foo"][0].children;
    -> ConfigMap &m = map["foo"];
 
@@ -47,19 +51,22 @@ Operators provide pointers to subelements:
    -> ConfigMap *m = map["foo"];
 
    The same for ConfigVector and ConfigItem;
-
+```
 
 To get the size of a submap:
 
+```
    map["foo"][0].children.size();
    -> ((ConfigMap&)map["foo"]).size();
    The cast is only needed to be compatible to the olde implementation.
-
+```
 
 Don't use the ConfigItem constructor:
 
+```
    map["foo"].push_back(ConfigItem("blub"));
    ->  map["foo"].push_back("blub");
 
    map["foo"] = ConfigItem("blub");
    ->  map["foo"] = "blub";
+```
