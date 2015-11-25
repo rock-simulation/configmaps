@@ -40,6 +40,7 @@ namespace configmaps {
     std::string trim(const std::string& str);
 
     class ConfigMap;
+    class ConfigItem;
  
     template <typename T>
     class ConfigVectorTemplate : public std::vector<T>{
@@ -90,6 +91,23 @@ namespace configmaps {
 
       const ConfigVectorTemplate& operator[](const char *text) const {
         return std::vector<T>::operator[](0)[text];
+      }
+
+      bool isVector() const {
+        return (this->size() > 1);
+      }
+
+      bool isMap() const {
+        if(this->size() == 1 && std::vector<T>::operator[](0).children.size() > 0) return true;
+        return false;
+      }
+
+      bool isAtom() const {
+        return (this->size() == 1 && std::vector<T>::operator[](0).children.size() == 0);
+      }
+
+      const char* c_str() {
+        std::vector<T>::operator[](0).getString().c_str();
       }
 
       size_t append(const T &item) {
@@ -237,6 +255,42 @@ namespace configmaps {
         return *this;
       }
 
+      FIFOMap<std::string, ConfigVectorTemplate<ConfigItem> >::iterator beginMap() {
+        return (*this)[0].children.begin();
+      }
+
+      FIFOMap<std::string, ConfigVectorTemplate<ConfigItem> >::iterator endMap() {
+        return (*this)[0].children.end();
+      }
+
+      FIFOMap<std::string, ConfigVectorTemplate<ConfigItem> >::iterator find(const std::string &key) {
+        return (*this)[0].children.find(key);
+      }
+
+      bool hasKey(const std::string &key) {
+        return (*this)[0].children.hasKey(key);
+      }
+
+      std::string toString() {
+        return (*this)[0].toString();
+      }
+
+      operator ConfigMap & () {
+        return (*this)[0].children;
+      }
+
+      operator ConfigMap * () {
+        return &(*this)[0].children;
+      }
+
+      operator ConfigItem & () {
+        return (*this)[0];
+      }
+
+      operator ConfigItem * () {
+        return &(*this)[0];
+      }
+
       operator int () {
         return (*this)[0].getInt();
       }
@@ -299,6 +353,10 @@ namespace configmaps {
       static ConfigMap fromYamlString(const std::string &s);
       static void recursiveLoad(ConfigMap *map, std::string path);
 
+      bool hasKey(const std::string &key) const {
+        return (find(key) != end());
+      }
+
       // checks if the key is in the list, if not return the given default value
       template<typename T> T get(const std::string &key,
                                  const T &defaultValue) {
@@ -333,37 +391,37 @@ namespace configmaps {
       ConfigItem() : luValue(0), iValue(0), uValue(0), dValue(0.0),
                      parsed(false), type(UNDEFINED_TYPE) {}
 
-      explicit ConfigItem(int val) : luValue(0), iValue(val),
+      ConfigItem(int val) : luValue(0), iValue(val),
                                      uValue(0), dValue(0.0),
                                      parsed(true), type(INT_TYPE) {}
 
-      explicit ConfigItem(bool val) : luValue(0), iValue(val),
+       ConfigItem(bool val) : luValue(0), iValue(val),
                                       uValue(0), dValue(0.0),
                                       parsed(true), type(BOOL_TYPE) {}
 
-      explicit ConfigItem(unsigned int val) : luValue(0), iValue(0),
+       ConfigItem(unsigned int val) : luValue(0), iValue(0),
                                               uValue(val), dValue(0.0),
                                               parsed(true), type(UINT_TYPE) {}
 
-      explicit ConfigItem(double val) : luValue(0), iValue(0),
+       ConfigItem(double val) : luValue(0), iValue(0),
                                         uValue(0), dValue(val),
                                         parsed(true), type(DOUBLE_TYPE) {}
 
-      explicit ConfigItem(unsigned long val) : luValue(val), iValue(0),
+       ConfigItem(unsigned long val) : luValue(val), iValue(0),
                                                uValue(0), dValue(0.0),
                                                parsed(true), type(ULONG_TYPE) {}
 
-      explicit ConfigItem(std::string val) : luValue(0), iValue(0),
+       ConfigItem(std::string val) : luValue(0), iValue(0),
                                              uValue(0), dValue(0.0),
                                              sValue(val.c_str()), parsed(false),
                                              type(UNDEFINED_TYPE) {}
 
-      explicit ConfigItem(const char *val) : luValue(0), iValue(0),
+       ConfigItem(const char *val) : luValue(0), iValue(0),
                                              uValue(0), dValue(0.0),
                                              sValue(val), parsed(false),
                                              type(UNDEFINED_TYPE) {}
 
-      explicit ConfigItem(ConfigMap map) : children(map), luValue(0), iValue(0),
+       ConfigItem(ConfigMap map) : children(map), luValue(0), iValue(0),
                                            uValue(0), dValue(0.0),
                                            sValue(""), parsed(false),
                                            type(UNDEFINED_TYPE) {}
@@ -374,6 +432,22 @@ namespace configmaps {
 
       ConfigVector& operator[](const char* name) {
         return children[name];
+      }
+
+      operator ConfigMap& () {
+        return children;
+      }
+
+      operator ConfigMap* () {
+        return &children;
+      }
+
+      operator ConfigVector& () {
+        throw 1;
+      }
+
+      operator ConfigVector* () {
+        throw 1;
       }
 
       operator int () {
@@ -586,6 +660,38 @@ namespace configmaps {
         return std::string();
       }
 
+      inline bool hasKey(const std::string &key) const {
+        return (children.find(key) != children.end());
+      }
+
+      ConfigMap::iterator beginMap() {
+        return children.begin();
+      }
+
+      ConfigMap::iterator endMap() {
+        return children.end();
+      }
+
+      ConfigMap::iterator find(const std::string &key) {
+        return children.find(key);
+      }
+
+      size_t size() const {
+        return children.size();
+      }
+
+      bool isMap() const {
+        return (children.size() > 0);
+      }
+
+      bool isAtom() const {
+        return (children.size() == 0);
+      }
+
+      bool isVector() const {
+        return false;
+      }
+
     private:
       unsigned long luValue;
       int iValue;
@@ -650,6 +756,8 @@ namespace configmaps {
       }
       
     }; // end of class ConfigItem
+
+    typedef ConfigItem ConfigAtom;
 
   } // end of namespace configmaps
 
