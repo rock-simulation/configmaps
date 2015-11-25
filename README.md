@@ -12,7 +12,7 @@ needed to compile againt both branches are listed below:
 Remove use of the children property:
 
    map["foo"][0].children["blub"] = "test";
-   ->  map["foo"]["blub"] = "test"
+   ->  map["foo"]["blub"] = "test";
 
    it = map["foo"][0].children.begin();
    ->  it = map["foo"].beginMap();
