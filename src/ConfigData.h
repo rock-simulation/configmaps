@@ -25,7 +25,7 @@
   #warning "ConfigData.h"
 #endif
 
-#warning "ConfigData.h is deprecated! Use ConfigMap.hpp, ConfigItem.hpp, ConfigVector.hpp, and ConfigAtom.hpp instead. -- API changes: children does no longer exists. You can use beginMap(), endMap(), find(), and hasKey() on a ConfigItem if it is of type ConfigMap. -- For introspection you can ask for the type by calling isAtom(), isMap(), or isVector()."
+//#warning "ConfigData.h is deprecated! Use ConfigMap.hpp, ConfigItem.hpp, ConfigVector.hpp, and ConfigAtom.hpp instead. -- API changes: children does no longer exists. You can use beginMap(), endMap(), find(), and hasKey() on a ConfigItem if it is of type ConfigMap. -- For introspection you can ask for the type by calling isAtom(), isMap(), or isVector()."
 
 #include "ConfigItem.hpp"
 #include "ConfigMap.hpp"
