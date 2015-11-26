@@ -202,22 +202,11 @@ namespace configmaps {
     static void dumpConfigAtomToYaml(YAML::Emitter &emitter,
                                      const ConfigAtom &item) {
       std::string s = item.toString();
-
-      if(!s.empty() && item.children.size()) {
-        fprintf(stderr, "%s::%s : To dump to yaml file it is not allowed to have a item value and map at the same time.\n",
-                item.getParentName().c_str(), s.c_str());
-        assert(false);
-      }
-      else {
-        if(s.empty() && item.children.size() == 0) {
-          emitter << "";
-        }
-      }
 #ifdef VERBOSE
       fprintf(stderr, "dump: %s\n", s.c_str());
 #endif
-      if(!s.empty())
-        emitter << s;
+      if(s.empty()) emitter << " ";
+      else emitter << s;
     }
 
     static void dumpConfigVectorToYaml(YAML::Emitter &emitter,

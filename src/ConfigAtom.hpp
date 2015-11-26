@@ -34,7 +34,6 @@ namespace configmaps {
 
   class ConfigAtom : public ConfigBase {
   public:
-    ConfigMap children;
     enum ItemType {UNDEFINED_TYPE, INT_TYPE, UINT_TYPE, DOUBLE_TYPE,
                    ULONG_TYPE, STRING_TYPE, BOOL_TYPE};
 
@@ -72,10 +71,6 @@ namespace configmaps {
                                            sValue(val), parsed(false),
                                            type(UNDEFINED_TYPE) {}
 
-    ConfigAtom(ConfigMap map) : children(map), luValue(0), iValue(0),
-                                         uValue(0), dValue(0.0),
-                                         sValue(""), parsed(false),
-                                         type(UNDEFINED_TYPE) {}
     operator int () {
       return getInt();
     }
@@ -198,8 +193,8 @@ namespace configmaps {
     inline bool getBool() {
       if(type != UNDEFINED_TYPE && type != BOOL_TYPE) {
         char text[50];
-        sprintf(text, "ConfigAtom parsing wrong type getBool: %s - %s",
-                parentName.c_str(), sValue.c_str());
+        sprintf(text, "ConfigAtom parsing wrong type %d getBool: %s - %s",
+                type, parentName.c_str(), sValue.c_str());
         throw std::runtime_error(text);
       }
 
