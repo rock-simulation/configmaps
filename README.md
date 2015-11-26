@@ -70,3 +70,19 @@ Don't use the ConfigItem constructor:
    map["foo"] = ConfigItem("blub");
    ->  map["foo"] = "blub";
 ```
+
+
+Assign value to std::string is ambiguous:
+
+```
+   std::string s = map["foo"];  // ok because uses the std::string constructor
+   s = map["foo"]; // is ambiguous due to operator=(std::string) and operator=(char)
+
+   alternative:
+   s << map["foo"];
+   
+   you can use the streaming operator as general configmap assign operator:
+   double d;
+   d << map["some_value"];
+   map["another_value"] << 3.14;
+```
