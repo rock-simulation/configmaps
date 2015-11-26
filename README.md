@@ -3,10 +3,10 @@ Documentation can be found at [doc](doc/configmaps.md).
 In the restructured branch the internal representation is refactored. Instead
 of using the map/vector/map/vector principle we now have a map of ConfigItems
 and a ConfigItem is of type map, vector, or atom. The api is mainly kept the
-same. Main difference is that the children property is removed and there users
-have to adapt their code. The master api is also adapted to allow code that
-compiles against the restructured and the "old" master branch. Changes that are
-needed to compile againt both branches are listed below:
+same. Main difference is that the children property is removed. The master api
+is also adapted to allow code that compiles against the restructured and the
+"old" master branch. Changes that are needed to compile against both branches
+are listed below:
 
 
 Remove use of the children property:
