@@ -265,15 +265,7 @@ namespace configmaps {
   }
 
   ConfigItem& ConfigItem::operator[](const char* s) {
-    if(!item) {
-      item = new ConfigMap();
-      item->setParentName(parentName);
-    }
-    ConfigMap *v = dynamic_cast<ConfigMap*>(item);
-    if(v) {
-      return (*v)[s];
-    }
-    throw 2;
+    return (*this)[std::string(s)];
   }
 
   ConfigItem& ConfigItem::operator[](std::string s) {
@@ -281,9 +273,13 @@ namespace configmaps {
       item = new ConfigMap();
       item->setParentName(parentName);
     }
-    ConfigMap *v = dynamic_cast<ConfigMap*>(item);
+    ConfigMap *m = dynamic_cast<ConfigMap*>(item);
+    if(m) {
+      return (*m)[s];
+    }
+    ConfigVector *v = dynamic_cast<ConfigVector*>(item);
     if(v) {
-      return (*v)[s];
+      return (*v)[0][s];
     }
     throw 2;
   }

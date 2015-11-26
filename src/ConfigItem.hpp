@@ -151,6 +151,11 @@ namespace configmaps {
     }
 
     template<typename T>
+    void push_back(const T &value) {
+      *this += value;
+    }
+
+    template<typename T>
     ConfigItem& operator+=(const T &value) {
       return *this += ConfigItem(ConfigAtom(value));
     }
