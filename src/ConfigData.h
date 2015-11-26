@@ -107,19 +107,18 @@ namespace configmaps {
       }
 
       const char* c_str() {
-        std::vector<T>::operator[](0).getString().c_str();
+        return std::vector<T>::operator[](0).getString().c_str();
+      }
+
+      template <typename T1>
+      ConfigVectorTemplate& operator<<(const T1 &v) {
+        return (std::vector<T>::operator[](0) = v);
       }
 
       size_t append(const T &item) {
         this->push_back(item);
         this->back().setParentName(parentName);
         return this->size() - 1;
-      }
-
-      ConfigVectorTemplate& operator<<(const T &item) {
-        this->push_back(item);
-        this->back().setParentName(parentName);
-        return *this;
       }
 
       ConfigVectorTemplate& operator+=(const T &item) {
@@ -215,46 +214,6 @@ namespace configmaps {
         return *this;
       }
 
-      ConfigVectorTemplate& operator<<(const int& v) {
-        *this << T(v);
-        return *this;
-      }
-
-      ConfigVectorTemplate& operator<<(const bool& v) {
-        *this << T(v);
-        return *this;
-      }
-
-      ConfigVectorTemplate& operator<<(const unsigned int& v) {
-        *this << T(v);
-        return *this;
-      }
-
-      ConfigVectorTemplate& operator<<(const double &v) {
-        *this << T(v);
-        return *this;
-      }
-
-      ConfigVectorTemplate& operator<<(const unsigned long& v) {
-        *this << T(v);
-        return *this;
-      }
-
-      ConfigVectorTemplate& operator<<(const std::string& v) {
-        *this << T(v);
-        return *this;
-      }
-
-      ConfigVectorTemplate& operator<<(const char* v) {
-        *this << T(v);
-        return *this;
-      }
-
-      ConfigVectorTemplate& operator<<(const ConfigMap &v) {
-        *this << T(v);
-        return *this;
-      }
-
       FIFOMap<std::string, ConfigVectorTemplate<ConfigItem> >::iterator beginMap() {
         return (*this)[0].children.begin();
       }
@@ -334,6 +293,11 @@ namespace configmaps {
     // 1) they make the types nicer to use
     // 2) this enables us to use a ConfigMap inside the ConfigItem!
     typedef ConfigVectorTemplate<ConfigItem> ConfigVector;
+
+    template <typename T>
+    T& operator<<(T &a, ConfigVector& v) {
+      return (a = (T)(v[0]));
+    }
 
     class ConfigMap : public FIFOMap<std::string, ConfigVector> {
     public:
