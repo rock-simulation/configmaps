@@ -101,13 +101,13 @@ namespace configmaps {
     operator std::string ();
     operator bool ();
 
-    ConfigItem& operator=(int v);
-    ConfigItem& operator=(unsigned int v);
-    ConfigItem& operator=(double v);
-    ConfigItem& operator=(unsigned long v);
-    ConfigItem& operator=(std::string &v);
+    ConfigItem& operator=(const int v);
+    ConfigItem& operator=(const unsigned int v);
+    ConfigItem& operator=(const double v);
+    ConfigItem& operator=(const unsigned long v);
+    ConfigItem& operator=(const std::string &v);
     ConfigItem& operator=(const char* v);
-    ConfigItem& operator=(bool);
+    ConfigItem& operator=(const bool);
     const char* c_str();
     std::string toString() const;
     // deprecated atom function

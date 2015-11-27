@@ -229,27 +229,28 @@ namespace configmaps {
     return (bool)*getOrCreateAtom();
   }
 
-  ConfigItem& ConfigItem::operator=(int v) {
+  ConfigItem& ConfigItem::operator=(const int v) {
     getOrCreateAtom()->setInt(v);
     return *this;
   }
 
-  ConfigItem& ConfigItem::operator=(unsigned int v) {
+  ConfigItem& ConfigItem::operator=(const unsigned int v) {
     getOrCreateAtom()->setUInt(v);
     return *this;
   }
 
-  ConfigItem& ConfigItem::operator=(double v) {
+  ConfigItem& ConfigItem::operator=(const double v) {
     getOrCreateAtom()->setDouble(v);
     return *this;
   }
 
-  ConfigItem& ConfigItem::operator=(unsigned long v) {
+  ConfigItem& ConfigItem::operator=(const unsigned long v) {
     getOrCreateAtom()->setULong(v);
     return *this;
   }
 
-  ConfigItem& ConfigItem::operator=(std::string &v) {
+  ConfigItem& ConfigItem::operator=(const std::string &v) {
+    fprintf(stderr, "set unparsed string: %s\n", v.c_str());
     getOrCreateAtom()->setUnparsedString(v);
     return *this;
   }
@@ -259,7 +260,7 @@ namespace configmaps {
     return *this;
   }
 
-  ConfigItem& ConfigItem::operator=(bool v) {
+  ConfigItem& ConfigItem::operator=(const bool v) {
     getOrCreateAtom()->setBool(v);
     return *this;
   }
