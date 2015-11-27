@@ -250,7 +250,6 @@ namespace configmaps {
   }
 
   ConfigItem& ConfigItem::operator=(const std::string &v) {
-    fprintf(stderr, "set unparsed string: %s\n", v.c_str());
     getOrCreateAtom()->setUnparsedString(v);
     return *this;
   }
