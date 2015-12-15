@@ -37,7 +37,7 @@ Example program:
       map = configmaps::ConfigMap::fromYamlFile("test.yml");
       configmaps::ConfigVector::iterator it;
       for(it=map["list"].begin(); it!=map["list"].end(); ++it) {
-        printf("list entry: %s\n", it->getString().c_str());
+        printf("list entry: %s\n", it->c_str());
       }
       double value1 = map["value1"];
       printf("value1: %g\n", value1);
@@ -46,8 +46,8 @@ Example program:
       map["value2"] = 3;
       printf("value2 modified: %d\n", value2);
 
-      std::string foo2 = (std::string)map["foo"]["foo2"];
-      std::string foo3 = (std::string)map["foo"][0]["foo3"];
+      std::string foo2 = map["foo"]["foo2"];
+      std::string foo3 = map["foo"][0]["foo3"];
 
       printf("%s\n", foo2.c_str());
       printf("%s\n", foo3.c_str());
