@@ -133,6 +133,7 @@ namespace configmaps {
     std::vector<ConfigItem>::iterator begin();
     std::vector<ConfigItem>::iterator end();
     size_t append(const ConfigItem &item);
+    std::vector<ConfigItem>::iterator erase(std::vector<ConfigItem>::iterator &it);
     /*
       ConfigItem& operator<<(const ConfigItem &item);
       ConfigItem& operator<<(const ConfigAtom &item);

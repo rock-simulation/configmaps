@@ -311,6 +311,10 @@ namespace configmaps {
     return getOrCreateVector()->append(value);
   }
 
+  std::vector<ConfigItem>::iterator ConfigItem::erase(std::vector<ConfigItem>::iterator &it) {
+    return getOrCreateVector()->erase(it);
+  }
+
   /*
   ConfigItem& ConfigItem::operator<<(const ConfigItem &value) {
     if(!item) {
