@@ -7,7 +7,7 @@ set(PROJECT_DESCRIPTION "This library contains a C++ implementation of python di
 include(FindPkgConfig)
 
 pkg_check_modules(PKGCONFIG REQUIRED
-        yaml-cpp
+        yaml-cpp03
 )
 include_directories(${PKGCONFIG_INCLUDE_DIRS})
 link_directories(${PKGCONFIG_LIBRARY_DIRS})
