@@ -1,6 +1,6 @@
 #include "ConfigData.h"
 
-#include <yaml-cpp/yaml.h>
+#include <yaml-cpp03/yaml.h>
 #include <fstream>
 #include <sstream>
 
