@@ -33,21 +33,31 @@ namespace configmaps {
 
 
     ConfigMap ConfigMap::fromYamlStream(std::istream &in) {
+#ifdef YAML_03_API
       YAML::Parser parser(in);
       YAML::Node doc, node;
       while(parser.GetNextDocument(doc)) {
         if(doc.Type() == YAML::NodeType::Map) {
           return parseConfigMapFromYamlNode(doc);
         } else {
+#else
+      {
+        YAML::Node node = YAML::Load(in);
+        if(!node.isMap()) {
+#endif
           fprintf(stderr,
-                  "ConfigMap::ConfigMapFromYaml currently only supports "
+                  "ConfigData::ConfigMapFromYaml currently only supports "
                   "mapping types at the root level. please contact the "
                   "developers if you need support for other types.\n");
           return ConfigMap();
         }
       }
+#ifdef YAML_03_API
       // if there is no valid document return a empty ConfigMap
       return ConfigMap();
+#else
+      return parseConfigMapFromYamlNode(ndoe);
+#endif
     }
 
     ConfigMap ConfigMap::fromYamlFile(const string &filename, bool loadURI) {
@@ -140,9 +150,13 @@ namespace configmaps {
     static ConfigAtom parseConfigAtomFromYamlNode(const YAML::Node &n) {
       ConfigAtom item;
       if(n.Type() == YAML::NodeType::Scalar) {
+#ifdef YAML_03_API
         std::string s;
         n.GetScalar(s);
         item.setUnparsedString(s);
+#else
+        item.setUnparsedString(n.Scalar());
+#endif
 #ifdef VERBOSE
         fprintf(stderr, "parsed atom: %s\n", s.c_str());
 #endif
@@ -172,6 +186,7 @@ namespace configmaps {
 
     static ConfigMap parseConfigMapFromYamlNode(const YAML::Node &n) {
       ConfigMap configMap;
+#ifdef YAML_03_API
       for(YAML::Iterator it = n.begin(); it != n.end(); ++it) {
         std::string s = it.first().to<std::string>();
 #ifdef VERBOSE
@@ -196,6 +211,32 @@ namespace configmaps {
           continue;
         }
       }
+#else
+      for(YAML::const_iterator it = n.begin(); it != n.end(); ++it) {
+        std::string key = it.first.as<std::string>();
+#ifdef VERBOSE
+        fprintf(stderr, "key: %s\n", key.c_str());
+#endif
+
+        if(it->second.IsScalar()) {
+          ConfigAtom atom = parseConfigAtomFromYamlNode(it.second);
+          ConfigItem &w = configMap[key];
+#ifdef VERBOSE
+          fprintf(stderr, "that: %lx\n", &w);
+#endif
+          w = atom;
+        } else if(it->second.IsSequence()) {
+          configMap[key] = parseConfigVectorFromYamlNode(it->second);
+        } else if(it->second.IsMap()) {
+          configMap[key] = parseConfigMapFromYamlNode(it->second);
+        } else if(it->second.IsNull()) {
+          continue;
+        } else {
+          fprintf(stderr, "Unknown YAML::NodeType: %d\n", it->second.Type());
+          continue;
+        }
+      }
+#endif
       return configMap;
     }
 
