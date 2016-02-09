@@ -27,21 +27,31 @@ namespace configmaps {
 
 
     ConfigMap ConfigMap::fromYamlStream(std::istream &in) {
+#ifdef YAML_03_API
       YAML::Parser parser(in);
       YAML::Node doc, node;
       while(parser.GetNextDocument(doc)) {
         if(doc.Type() == YAML::NodeType::Map) {
           return parseConfigMapFromYamlNode(doc);
         } else {
+#else
+      {
+        YAML::Node node = YAML::Load(in);
+        if(!node.isMap()) {
+#endif
           fprintf(stderr,
-                  "CFGManager::ConfigMapFromYaml currently only supports "
+                  "ConfigData::ConfigMapFromYaml currently only supports "
                   "mapping types at the root level. please contact the "
                   "developers if you need support for other types.\n");
           return ConfigMap();
         }
       }
+#ifdef YAML_03_API
       // if there is no valid document return a empty ConfigMap
       return ConfigMap();
+#else
+      return parseConfigMapFromYamlNode(ndoe);
+#endif
     }
 
     ConfigMap ConfigMap::fromYamlFile(const string &filename, bool loadURI) {
@@ -125,9 +135,13 @@ namespace configmaps {
     static ConfigItem parseConfigItemFromYamlNode(const YAML::Node &n) {
       ConfigItem item;
       if(n.Type() == YAML::NodeType::Scalar) {
+#ifdef YAML_03_API
         std::string s;
         n.GetScalar(s);
         item.setUnparsedString(s);
+#else
+        item.setUnparsedString(n.Scalar());
+#endif
       }
       return item;
     }
@@ -153,6 +167,7 @@ namespace configmaps {
 
     static ConfigMap parseConfigMapFromYamlNode(const YAML::Node &n) {
       ConfigMap configMap;
+#ifdef YAML_03_API
       for(YAML::Iterator it = n.begin(); it != n.end(); ++it) {
         if(it.second().Type() == YAML::NodeType::Scalar) {
           configMap[it.first().to<std::string>()].push_back(parseConfigItemFromYamlNode(it.second()));
@@ -169,6 +184,24 @@ namespace configmaps {
           continue;
         }
       }
+#else
+      for(YAML::const_iterator it = n.begin(); it != n.end(); ++it) {
+        if(it->second.IsScalar()) {
+          configMap[it->first.as<std::string>()].push_back(parseConfigItemFromYamlNode(it->second));
+        } else if(it->second.IsSequence()) {
+          configMap[it->first.as<std::string>()] = parseConfigVectorFromYamlNode(it->second);
+        } else if(it->second.IsMap()) {
+          ConfigItem item;
+          item.children = parseConfigMapFromYamlNode(it->second);
+          configMap[it->first.as<std::string>()].push_back(item);
+        } else if(it->second.IsNull()) {
+          continue;
+        } else {
+          fprintf(stderr, "Unknown YAML::NodeType: %d\n", it->second.Type());
+          continue;
+        }
+      }
+#endif
       return configMap;
     }
 
@@ -232,7 +265,7 @@ namespace configmaps {
       }
       emitter << YAML::EndMap;
     }
-    
+
     // utility functions
     std::string getPathOfFile(const std::string &filename) {
       std::string path = "./";
@@ -243,7 +276,7 @@ namespace configmaps {
       }
       return path;
     }
-    
+
     std::string trim(const std::string& str) {
       int front_idx, back_idx, len;
 
@@ -260,4 +293,3 @@ namespace configmaps {
     }
 
 } // end of namespace configmaps
-

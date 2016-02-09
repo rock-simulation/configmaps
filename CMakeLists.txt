@@ -6,12 +6,21 @@ set(PROJECT_DESCRIPTION "This library contains a C++ implementation of python di
 
 include(FindPkgConfig)
 
-pkg_check_modules(PKGCONFIG REQUIRED
+# is installed with https://github.com/rock-core/base-cmake.git
+find_package(Rock)
+rock_find_cmake(Boost)
+
+pkg_check_modules(YAML REQUIRED
         yaml-cpp
 )
-include_directories(${PKGCONFIG_INCLUDE_DIRS})
-link_directories(${PKGCONFIG_LIBRARY_DIRS})
-add_definitions(${PKGCONFIG_CFLAGS_OTHER})  #flags excluding the ones with -I
+include_directories(${YAML_INCLUDE_DIRS})
+link_directories(${YAML_LIBRARY_DIRS})
+add_definitions(${YAML_CFLAGS_OTHER})  #flags excluding the ones with -I
+
+if(${YAML_VERSION} EQUAL "0.3.0")
+  add_definitions(-DYAML_03_API)
+  message("       WARNING: The use of yaml 0.3 is deprecated!")
+endif()
 
 set(SOURCES 
     src/ConfigData.cpp
@@ -25,7 +34,7 @@ add_library(${PROJECT_NAME} SHARED ${SOURCES})
 
 target_link_libraries(
         ${PROJECT_NAME}
-        ${PKGCONFIG_LIBRARIES} 
+        ${YAML_LIBRARIES}
         -lpthread
 )
 
