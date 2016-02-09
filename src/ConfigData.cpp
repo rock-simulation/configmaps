@@ -35,9 +35,9 @@ namespace configmaps {
           return parseConfigMapFromYamlNode(doc);
         } else {
 #else
+      YAML::Node node = YAML::Load(in);
       {
-        YAML::Node node = YAML::Load(in);
-        if(!node.isMap()) {
+        if(!node.IsMap()) {
 #endif
           fprintf(stderr,
                   "ConfigData::ConfigMapFromYaml currently only supports "
@@ -50,7 +50,7 @@ namespace configmaps {
       // if there is no valid document return a empty ConfigMap
       return ConfigMap();
 #else
-      return parseConfigMapFromYamlNode(ndoe);
+      return parseConfigMapFromYamlNode(node);
 #endif
     }
 
@@ -149,7 +149,11 @@ namespace configmaps {
     static ConfigVector parseConfigVectorFromYamlNode(const YAML::Node &n) {
       ConfigVector vec;
       if(n.Type() == YAML::NodeType::Sequence) {
+#ifdef YAML_03_API
         YAML::Iterator it;
+#else
+        YAML::const_iterator it;
+#endif
         for(it = n.begin(); it != n.end(); ++it) {
           ConfigItem item;
           if(it->Type() == YAML::NodeType::Scalar) {
