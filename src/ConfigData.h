@@ -41,7 +41,7 @@ namespace configmaps {
 
     class ConfigMap;
     class ConfigItem;
- 
+
     template <typename T>
     class ConfigVectorTemplate : public std::vector<T>{
     public:
@@ -267,6 +267,10 @@ namespace configmaps {
       }
 
       operator std::string () {
+        return (std::string)(*this)[0].getString().c_str();
+      }
+
+      std::string getString() {
         return (std::string)(*this)[0].getString().c_str();
       }
 
@@ -718,7 +722,7 @@ namespace configmaps {
 
         return parsed = sscanf(sValue.c_str(), "%d", &iValue);
       }
-      
+
     }; // end of class ConfigItem
 
     typedef ConfigItem ConfigAtom;
