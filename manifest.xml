@@ -3,6 +3,7 @@
 	This library contains a C++ implementation of python dictionary-like containers - ConfigMaps.
     </description>
     <depend package="simulation/mars/scripts/cmake" />
+    <depend package="base/cmake" />
     <depend package="yaml-cpp" />
     <tags>needs_opt</tags>
 </package>
