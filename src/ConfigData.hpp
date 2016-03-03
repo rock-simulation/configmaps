@@ -18,11 +18,11 @@
  *
  */
 
-#ifndef CONFIG_DATA_H
-#define CONFIG_DATA_H
+#ifndef CONFIG_DATA_HPP
+#define CONFIG_DATA_HPP
 
 #ifdef _PRINT_HEADER_
-  #warning "ConfigData.h"
+  #warning "ConfigData.hpp"
 #endif
 
 #include <string>
@@ -31,7 +31,7 @@
 #include <cstdio>
 #include <iosfwd>
 
-#include "FIFOMap.h"
+#include "FIFOMap.hpp"
 
 namespace configmaps {
 
@@ -729,4 +729,4 @@ namespace configmaps {
 
   } // end of namespace configmaps
 
-#endif // CONFIG_DATA_H
+#endif // CONFIG_DATA_HPP

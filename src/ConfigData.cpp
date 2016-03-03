@@ -1,4 +1,4 @@
-#include "ConfigData.h"
+#include "ConfigData.hpp"
 
 #include <yaml-cpp/yaml.h>
 #include <fstream>

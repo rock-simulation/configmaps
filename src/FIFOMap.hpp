@@ -18,11 +18,11 @@
  *
  */
 
-#ifndef MARS_UTILS_FIFO_MAP_H
-#define MARS_UTILS_FIFO_MAP_H
+#ifndef MARS_UTILS_FIFO_MAP_HPP
+#define MARS_UTILS_FIFO_MAP_HPP
 
 #ifdef _PRINT_HEADER_
-#warning "FIFOMap.h"
+#warning "FIFOMap.hpp"
 #endif
 
 #include <map>
@@ -241,4 +241,4 @@ namespace configmaps {
     
 } // end of namespace configmaps
 
-#endif /* MARS_UTILS_FIFO_MAP_H */
+#endif /* MARS_UTILS_FIFO_MAP_HPP */

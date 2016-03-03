@@ -12,7 +12,7 @@ The ConfigMap is a nested implementation of std::maps and std::vectors to provid
  - double
  - bool
 
-An important feature is the loading and storing of ConfigMaps in yaml files. The example shows the usage of ConfigMaps for further details check [ConfigMap](@ref mars::utils::ConfigData.h).
+An important feature is the loading and storing of ConfigMaps in yaml files. The example shows the usage of ConfigMaps for further details check [ConfigMap](@ref mars::utils::ConfigData.hpp).
 
 Note: While reading and writing yaml files the order of dictionaries is not necessarily kept.
 
@@ -28,7 +28,7 @@ Yaml example file:
 
 Example program:
 
-    #include <configmaps/ConfigData.h>
+    #include <configmaps/ConfigData.hpp>
 
     int main(int argc, char *argv[]) {
 

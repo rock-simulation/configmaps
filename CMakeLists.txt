@@ -26,8 +26,8 @@ set(SOURCES
     src/ConfigData.cpp
 )
 set(HEADERS
-    src/ConfigData.h
-    src/FIFOMap.h
+    src/ConfigData.hpp
+    src/FIFOMap.hpp
 )
 
 add_library(${PROJECT_NAME} SHARED ${SOURCES})
