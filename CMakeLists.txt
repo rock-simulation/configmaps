@@ -26,8 +26,8 @@ set(SOURCES
     src/ConfigData.cpp
 )
 set(HEADERS
-    src/ConfigData.h
-    src/FIFOMap.h
+    src/ConfigData.hpp
+    src/FIFOMap.hpp
 )
 
 add_library(${PROJECT_NAME} SHARED ${SOURCES})
@@ -57,6 +57,11 @@ install(TARGETS ${PROJECT_NAME} ${_INSTALL_DESTINATIONS})
 
 # Install headers into mars include directory
 install(FILES ${HEADERS} DESTINATION include/configmaps)
+
+# MZ: some compatiblity headers after renaming. keep around for a month, then
+# delete.
+install(FILES src/ConfigData.h DESTINATION include/configmaps)
+install(FILES src/FIFOMap.h DESTINATION include/configmaps)
 
 # Prepare and install necessary files to support finding of the library 
 # using pkg-config
