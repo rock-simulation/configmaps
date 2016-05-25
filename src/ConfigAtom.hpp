@@ -27,6 +27,7 @@
 
 #include <string>
 #include <stdexcept>
+#include <cstdio>
 
 #include "ConfigItem.hpp"
 
