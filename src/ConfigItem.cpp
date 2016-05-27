@@ -126,7 +126,7 @@ namespace configmaps {
     if(v) {
       return v->end();
     }
-    throw 2;
+    throw wrongTypeExp;
   }
 
   FIFOMap<std::string, ConfigItem>::iterator ConfigItem::find(std::string key) {
@@ -138,7 +138,7 @@ namespace configmaps {
     if(v) {
       return v->find(key);
     }
-    throw 2;
+    throw wrongTypeExp;
   }
 
   bool ConfigItem::hasKey(std::string key) {
@@ -176,7 +176,7 @@ namespace configmaps {
     }
     ConfigMap *m = dynamic_cast<ConfigMap*>(item);
     if(m) return *m;
-    throw 2;
+    throw wrongTypeExp;
   }
 
   ConfigItem::operator ConfigMap* () {
@@ -186,7 +186,7 @@ namespace configmaps {
     }
     ConfigMap *m = dynamic_cast<ConfigMap*>(item);
     if(m) return m;
-    throw 2;
+    throw wrongTypeExp;
   }
 
   ConfigItem::operator ConfigVector& () {
@@ -281,11 +281,11 @@ namespace configmaps {
     if(v) {
       return (*v)[0][s];
     }
-    throw 2;
+    throw wrongTypeExp;
   }
 
   ConfigItem& ConfigItem::operator[](int s) {
-    if(s < 0) throw 4;
+    if(s < 0) throw badIndexExp;
     return (*this)[(unsigned long)s];
   }
 
@@ -304,7 +304,7 @@ namespace configmaps {
     if(s==0) {
       return *this;
     }
-    throw 2;
+    throw wrongTypeExp;
   }
 
   size_t ConfigItem::append(const ConfigItem &value) {
@@ -356,7 +356,7 @@ namespace configmaps {
       ConfigAtom *m = dynamic_cast<ConfigAtom*>(item);
       if(m) return m->toString();
     }
-    throw 2;
+    throw wrongTypeExp;
   }
 
   size_t ConfigItem::size() const {
@@ -368,7 +368,7 @@ namespace configmaps {
       ConfigAtom *a = dynamic_cast<ConfigAtom*>(item);
       if(a) return 1;
     }
-    throw 2;
+    throw noTypeExp;
   }
 
   ConfigAtom* ConfigItem::getOrCreateAtom() {
@@ -383,7 +383,7 @@ namespace configmaps {
     if(atom) return atom;
     ConfigVector *v = dynamic_cast<ConfigVector*>(item);
     if(v) return (*v)[0].getOrCreateAtom();
-    throw 2;
+    throw wrongTypeExp;
   }
 
   ConfigVector* ConfigItem::getOrCreateVector() {

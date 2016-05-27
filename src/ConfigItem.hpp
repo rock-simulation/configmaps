@@ -57,6 +57,24 @@ namespace configmaps {
     }; // end of class ConfigVectorTemplate
 
   class ConfigItem {
+    class NoTypeException: public std::exception {
+      virtual const char* what() const throw() {
+        return "Item has no type.";
+      }
+    } noTypeExp;
+
+    class WrongTypeException: public std::exception {
+      virtual const char* what() const throw() {
+        return "Item is of wrong type.";
+      }
+    } wrongTypeExp;
+
+    class BadIndexException: public std::exception {
+      virtual const char* what() const throw() {
+        return "Item is of wrong type.";
+      }
+    } badIndexExp;
+
   public:
     ConfigItem();
     ConfigItem(const ConfigItem &item);
