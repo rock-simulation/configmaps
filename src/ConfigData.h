@@ -81,7 +81,7 @@ namespace configmaps {
         return std::vector<T>::operator[](index);
       }
 
-       ConfigVectorTemplate& operator[](const char *text) {
+      ConfigVectorTemplate& operator[](const char *text) {
         if(0 == this->size()) {
           this->push_back(T());
           this->back().setParentName(parentName);
@@ -352,7 +352,7 @@ namespace configmaps {
 
     class ConfigItem {
     public:
-      ConfigMap children;
+      ConfigMap children __attribute__ ((deprecated));
       enum ItemType {UNDEFINED_TYPE, INT_TYPE, UINT_TYPE, DOUBLE_TYPE,
                      ULONG_TYPE, STRING_TYPE, BOOL_TYPE};
 
