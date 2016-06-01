@@ -97,6 +97,8 @@ namespace configmaps {
         return (this->size() > 1);
       }
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
       bool isMap() const {
         if(this->size() == 1 && std::vector<T>::operator[](0).children.size() > 0) return true;
         return false;
@@ -105,6 +107,7 @@ namespace configmaps {
       bool isAtom() const {
         return (this->size() == 1 && std::vector<T>::operator[](0).children.size() == 0);
       }
+#pragma GCC diagnostic pop
 
       const char* c_str() {
         return std::vector<T>::operator[](0).getString().c_str();
@@ -214,6 +217,9 @@ namespace configmaps {
         return *this;
       }
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+      
       FIFOMap<std::string, ConfigVectorTemplate<ConfigItem> >::iterator beginMap() {
         return (*this)[0].children.begin();
       }
@@ -229,6 +235,8 @@ namespace configmaps {
       bool hasKey(const std::string &key) {
         return (*this)[0].children.hasKey(key);
       }
+
+#pragma GCC diagnostic pop
 
       std::string toString() {
         return (*this)[0].toString();
@@ -350,11 +358,18 @@ namespace configmaps {
     // todo: support vector and quaternion
     // a vector has three children (x, y, z) which can be parsed
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
     class ConfigItem {
+#pragma GCC diagnostic pop
+
     public:
       ConfigMap children __attribute__ ((deprecated));
       enum ItemType {UNDEFINED_TYPE, INT_TYPE, UINT_TYPE, DOUBLE_TYPE,
                      ULONG_TYPE, STRING_TYPE, BOOL_TYPE};
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 
       ConfigItem() : luValue(0), iValue(0), uValue(0), dValue(0.0),
                      parsed(false), type(UNDEFINED_TYPE) {}
@@ -409,6 +424,8 @@ namespace configmaps {
       operator ConfigMap* () {
         return &children;
       }
+
+#pragma GCC diagnostic pop                                          
 
       operator ConfigVector& () {
         throw 1;
@@ -628,6 +645,8 @@ namespace configmaps {
         return std::string();
       }
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
       inline bool hasKey(const std::string &key) const {
         return (children.find(key) != children.end());
       }
@@ -655,6 +674,7 @@ namespace configmaps {
       bool isAtom() const {
         return (children.size() == 0);
       }
+#pragma GCC diagnostic pop
 
       bool isVector() const {
         return false;

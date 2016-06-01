@@ -64,7 +64,10 @@ namespace configmaps {
       return map;
     }
 
-    void ConfigMap::recursiveLoad(ConfigMap *map, std::string path) {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+
+void ConfigMap::recursiveLoad(ConfigMap *map, std::string path) {
       ConfigMap::iterator it = map->begin();
       std::list<ConfigMap::iterator> eraseList;
       std::list<ConfigMap::iterator>::iterator eraseIt;
@@ -92,6 +95,7 @@ namespace configmaps {
         map->erase(*eraseIt);
       }
     }
+#pragma GCC diagnostic pop
 
     ConfigMap ConfigMap::fromYamlString(const string &s) {
       std::istringstream sin(s);
@@ -145,6 +149,9 @@ namespace configmaps {
       }
       return item;
     }
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 
     static ConfigVector parseConfigVectorFromYamlNode(const YAML::Node &n) {
       ConfigVector vec;
@@ -229,6 +236,7 @@ namespace configmaps {
       if(item.children.size())
         dumpConfigMapToYaml(emitter, item.children);
     }
+#pragma GCC diagnostic pop
 
     static void dumpConfigVectorToYaml(YAML::Emitter &emitter,
                                        const ConfigVector &vec) {
