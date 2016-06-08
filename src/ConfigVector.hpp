@@ -55,8 +55,15 @@ namespace configmaps {
       this->push_back(item);
       this->back().setParentName(parentName);
       return *this;
-    }    
-  }; // end of class ConfigVectorTemplate
+    }
+
+    /**
+     * @brief Create YAML representation dumped into the given emitter.
+     * @param emitter The emitter to wich the configVector yaml will be added (modifies parameter!).
+     */
+    virtual void dumpToYamlEmitter(YAML::Emitter &emitter) const;
+
+  }; // end of class ConfigVector
 
 } // end of namespace configmaps
 

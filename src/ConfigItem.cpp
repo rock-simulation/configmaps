@@ -145,6 +145,11 @@ namespace configmaps {
     return (find(key) != endMap());
   }
 
+
+  void ConfigItem::dumpToYamlEmitter(YAML::Emitter &emitter) const{
+      item->dumpToYamlEmitter(emitter);
+  }
+
   bool ConfigItem::isAtom() const {
     if(item) {
       ConfigAtom *m = dynamic_cast<ConfigAtom*>(item);

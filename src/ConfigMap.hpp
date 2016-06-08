@@ -68,6 +68,12 @@ namespace configmaps {
     static ConfigMap fromYamlString(const std::string &s);
     static void recursiveLoad(ConfigBase *item, std::string path);
 
+    /**
+     * @brief Create YAML representation of this ConfigMap to a YAML::Emmitter.
+     * @param emitter The output emitter. (parameter gets modified!).
+     */
+    virtual void dumpToYamlEmitter(YAML::Emitter &emitter) const;
+
     // checks if the key is in the list, if not return the given default value
     template<typename T> T get(const std::string &key,
                                const T &defaultValue) {

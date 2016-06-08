@@ -21,14 +21,6 @@ namespace configmaps {
   static ConfigAtom parseConfigAtomFromYamlNode(const YAML::Node &n);
   static ConfigVector parseConfigVectorFromYamlNode(const YAML::Node &n);
   static ConfigMap parseConfigMapFromYamlNode(const YAML::Node &n);
-  static void dumpConfigItemToYaml(YAML::Emitter &emitter,
-                                   const ConfigBase &item);
-  static void dumpConfigAtomToYaml(YAML::Emitter &emitter,
-                                   const ConfigAtom &item);
-  static void dumpConfigVectorToYaml(YAML::Emitter &emitter,
-                                     const ConfigVector &vec);
-  static void dumpConfigMapToYaml(YAML::Emitter &emitter,
-                                  const ConfigMap &configMap);
 
 
 
@@ -116,7 +108,7 @@ namespace configmaps {
 
     void ConfigMap::toYamlStream(std::ostream &out) const {
       YAML::Emitter emitter;
-      dumpConfigMapToYaml(emitter, *this);
+      dumpToYamlEmitter(emitter);
       if(!emitter.good()) {
         fprintf(stderr, "ERROR: ConfigMap::toYamlStream failed!\n");
         return;
@@ -139,6 +131,24 @@ namespace configmaps {
       std::ostringstream sout;
       toYamlStream(sout);
       return sout.str();
+    }
+
+
+    void ConfigMap::dumpToYamlEmitter(YAML::Emitter &emitter) const {
+      emitter << YAML::BeginMap;
+      ConfigMap::const_iterator it;
+      for(it = this->begin(); it != this->end(); ++it) {
+        emitter << YAML::Key << it->first;
+        if(!(emitter.good())) {
+          fprintf(stderr, "problem with ConfigMap for: %s\n", it->first.c_str());
+        }
+        emitter << YAML::Value;
+#ifdef VERBOSE
+        fprintf(stderr, "dump map: %s\n", it->first.c_str());
+#endif
+        it->second.dumpToYamlEmitter(emitter);
+      }
+      emitter << YAML::EndMap;
     }
 
 
@@ -244,94 +254,39 @@ namespace configmaps {
       return configMap;
     }
 
-    static void dumpConfigAtomToYaml(YAML::Emitter &emitter,
-                                     const ConfigAtom &item) {
-      std::string s = item.toString();
-#ifdef VERBOSE
-      fprintf(stderr, "dump: %s\n", s.c_str());
-#endif
-      if(s.empty()) emitter << " ";
-      else emitter << s;
-    }
 
-    static void dumpConfigVectorToYaml(YAML::Emitter &emitter,
-                                       const ConfigVector &vec) {
-      bool do_sequence = false;
-      // if(vec.size() == 1){
-      //   if (vec.begin()->children.size() > 1){
-      //     do_sequence = true;
-      //   }
-      // }
-
-      //if(vec.size() > 1 || do_sequence) {
-      emitter << YAML::BeginSeq;
-      //}
-      if(!(emitter.good() && 1)) {
-        std::string s = vec.getParentName();
-        fprintf(stderr, "problem with ConfigVector for: %s\n",
-                s.c_str());
-      }
-      assert(emitter.good() && 1);
-      for(unsigned int i = 0; i < vec.size(); ++i) {
-        const ConfigItem &w = vec[i];
-        const ConfigBase &item = w;
-        dumpConfigItemToYaml(emitter, item);
-      }
-      //if(vec.size() > 1 || do_sequence) {
-      emitter << YAML::EndSeq;
-      //}
-    }
-
-    static void dumpConfigItemToYaml(YAML::Emitter &emitter,
-                                     const ConfigBase &configItem) {
-      //std::string s = ((const ConfigAtom*)&configItem)->toString();
-#ifdef VERBOSE
-      fprintf(stderr, "try: %s\n", configItem.getParentName().c_str());
-#endif
-      const ConfigAtom *a = dynamic_cast<const ConfigAtom*>(&configItem);
-      if(a) {
-#ifdef VERBOSE
-        fprintf(stderr, "have atom\n");
-#endif
-        dumpConfigAtomToYaml(emitter, *a);
-      }
-      else {
-        const ConfigVector *v = dynamic_cast<const ConfigVector*>(&configItem);
-        if(v) {
-#ifdef VERBOSE
-          fprintf(stderr, "have vector\n");
-#endif
-          dumpConfigVectorToYaml(emitter, *v);
-        }
-        else {
-          const ConfigMap *m = dynamic_cast<const ConfigMap*>(&configItem);
-          if(m) {
-#ifdef VERBOSE
-            fprintf(stderr, "have map\n");
-#endif
-            dumpConfigMapToYaml(emitter, *m);
-          }
-        }
-      }
-    }
-
-    static void dumpConfigMapToYaml(YAML::Emitter &emitter,
-                                    const ConfigMap &configMap) {
-      emitter << YAML::BeginMap;
-      ConfigMap::const_iterator it;
-      for(it = configMap.begin(); it != configMap.end(); ++it) {
-        emitter << YAML::Key << it->first;
-        if(!(emitter.good())) {
-          fprintf(stderr, "problem with ConfigMap for: %s\n", it->first.c_str());
-        }
-        emitter << YAML::Value;
-#ifdef VERBOSE
-        fprintf(stderr, "dump map: %s\n", it->first.c_str());
-#endif
-        dumpConfigItemToYaml(emitter, it->second);
-      }
-      emitter << YAML::EndMap;
-    }
+//    static void dumpConfigItemToYaml(YAML::Emitter &emitter,
+//                                     const ConfigBase &configItem) {
+//      //std::string s = ((const ConfigAtom*)&configItem)->toString();
+//#ifdef VERBOSE
+//      fprintf(stderr, "try: %s\n", configItem.getParentName().c_str());
+//#endif
+//      const ConfigAtom *a = dynamic_cast<const ConfigAtom*>(&configItem);
+//      if(a) {
+//#ifdef VERBOSE
+//        fprintf(stderr, "have atom\n");
+//#endif
+//        dumpConfigAtomToYaml(emitter, *a);
+//      }
+//      else {
+//        const ConfigVector *v = dynamic_cast<const ConfigVector*>(&configItem);
+//        if(v) {
+//#ifdef VERBOSE
+//          fprintf(stderr, "have vector\n");
+//#endif
+//          dumpConfigVectorToYaml(emitter, *v);
+//        }
+//        else {
+//          const ConfigMap *m = dynamic_cast<const ConfigMap*>(&configItem);
+//          if(m) {
+//#ifdef VERBOSE
+//            fprintf(stderr, "have map\n");
+//#endif
+//            dumpConfigMapToYaml(emitter, *m);
+//          }
+//        }
+//      }
+//    }
 
     // utility functions
     std::string getPathOfFile(const std::string &filename) {

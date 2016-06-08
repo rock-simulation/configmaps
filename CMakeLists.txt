@@ -25,6 +25,7 @@ endif()
 set(SOURCES 
     src/ConfigMap.cpp
     src/ConfigItem.cpp
+    src/ConfigVector.cpp
 )
 set(HEADERS
     src/ConfigData.h

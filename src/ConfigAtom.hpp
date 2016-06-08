@@ -28,7 +28,7 @@
 #include <string>
 #include <stdexcept>
 #include <cstdio>
-
+#include <yaml-cpp/yaml.h>
 #include "ConfigItem.hpp"
 
 namespace configmaps {
@@ -271,6 +271,17 @@ namespace configmaps {
         else return "false";
       }
       return std::string();
+    }
+
+    virtual void dumpToYamlEmitter(YAML::Emitter &emitter) const {
+      std::string s = toString();
+#ifdef VERBOSE
+      fprintf(stderr, "dump: %s\n", s.c_str());
+#endif
+      if(s.empty())
+          emitter << " ";
+      else
+          emitter << s;
     }
 
   private:

@@ -30,6 +30,12 @@
 #include <vector>
 #include "FIFOMap.h"
 
+
+//forwards:
+namespace YAML{
+    class Emitter;
+}
+
 namespace configmaps {
 
   class ConfigMap;
@@ -51,10 +57,12 @@ namespace configmaps {
       return parentName;
     }
 
+    virtual void dumpToYamlEmitter(YAML::Emitter &emitter) const = 0;
+
     protected:
       std::string parentName;
 
-    }; // end of class ConfigVectorTemplate
+  }; // end of class ConfigBase
 
   class ConfigItem {
     class NoTypeException: public std::exception {
@@ -99,6 +107,11 @@ namespace configmaps {
         item->setParentName(s);
       }
     }
+    /**
+     * @brief Calls the emitter function of its base object (if any).
+     * @param emitter The emitter to output the stream.
+     */
+    void dumpToYamlEmitter(YAML::Emitter &emitter) const;
 
     bool isAtom() const;
     bool isMap() const;
