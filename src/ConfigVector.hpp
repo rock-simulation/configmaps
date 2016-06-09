@@ -63,6 +63,12 @@ namespace configmaps {
      */
     virtual void dumpToYamlEmitter(YAML::Emitter &emitter) const;
 
+    /**
+     * @brief Fill the object with values from given YAML::Node.
+     * @param n The YAML::Node containing the serialized data for this object.
+     */
+    void parseFromYamlNode(const YAML::Node &n);
+
   }; // end of class ConfigVector
 
 } // end of namespace configmaps

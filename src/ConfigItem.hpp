@@ -34,6 +34,7 @@
 //forwards:
 namespace YAML{
     class Emitter;
+    class Node;
 }
 
 namespace configmaps {
@@ -58,12 +59,21 @@ namespace configmaps {
     }
 
     virtual void dumpToYamlEmitter(YAML::Emitter &emitter) const = 0;
+    virtual void parseFromYamlNode(const YAML::Node &n) = 0;
 
     protected:
       std::string parentName;
 
   }; // end of class ConfigBase
 
+
+  /**
+   * @brief Base object of the configmaps library!
+   *
+   * This is the basic object that manages elements in the configmaps data structure.
+   * It can contain all ConfigBase items, generate, serialize and de-serialize them.
+   * Possible items are: ConfigAtom (scalar values), ConfigVectors (lists), and ConfigMaps (key, Item).
+   */
   class ConfigItem {
     class NoTypeException: public std::exception {
       virtual const char* what() const throw() {
@@ -85,11 +95,45 @@ namespace configmaps {
 
   public:
     ConfigItem();
+    /**
+     * @brief Constructor to create a new Item during de-serialization process from a YAML::Node.
+     * @param n The YAML::Node containing the data for the new item.
+     * @throw Will throw runtime Error if the YAML::Node type is unknown!
+     */
+    ConfigItem(const YAML::Node &n);
     ConfigItem(const ConfigItem &item);
     ConfigItem(const ConfigBase &item);
     ~ConfigItem();
     ConfigItem& operator=(const ConfigItem&);
     ConfigItem& operator=(const ConfigBase&);
+
+    /**
+     * @brief Factory function, creating a ConfigItem out of a YAML stream.
+     *
+     * The function creates a new ConfigItem de-serialized from a YAML std::istream.
+     * Returned Item could contain ConfigAtom, ConfigVector or ConfigMap, depending of the
+     * root object of the YAML stream.
+     * @param in The input stream from which the YAML parser will read.
+     * @return ConfigItem filled by whatever we got from the stream.
+     */
+    static ConfigItem fromYamlStream(std::istream &in);
+    /**
+     * @brief Factory function, creating a ConfigItem out of a YAML File.
+     * @see fromYamlStream(std::istream &in)
+     * @param filename Path of the file that will be used as input.
+     * @param loadURI No idea.
+     * @return ConfigItem filled by whatever we got from the file.
+     * @throw std::runtime_error, if the file could not be opened.
+     */
+    static ConfigItem fromYamlFile(const std::string &filename,
+                                  bool loadURI = false);
+    /**
+     * @brief Factory function, creating a ConfigItem from a YAML String.
+     * @see ConfigItem fromYamlStream(std::istream &in)
+     * @param s The string containing the YAML.
+     * @return ConfigItem filled by whatever we got from the string.
+     */
+    static ConfigItem fromYamlString(const std::string &s);
 
     operator const ConfigBase& () const {return *item;}
     operator ConfigBase& () {return *item;}
@@ -205,6 +249,9 @@ namespace configmaps {
   private:
     ConfigBase *item;
     std::string parentName;
+
+    static void recursiveLoad(ConfigItem &item, std::string &path);
+    static std::string getPathOfFile(const std::string &filename);
   };
 
 

@@ -22,6 +22,8 @@
 #include "ConfigMap.hpp"
 #include "ConfigVector.hpp"
 #include "ConfigAtom.hpp"
+#include <sstream>
+#include <fstream>
 
 //#define VERBOSE
 
@@ -32,6 +34,26 @@ namespace configmaps {
 #ifdef VERBOSE
     fprintf(stderr, "new d %lx %lx\n", (unsigned long)this->item, (unsigned long)this);
 #endif
+  }
+
+  ConfigItem::ConfigItem(const YAML::Node &n){
+      ///@todo implement me!
+      //create correct object type for the item:
+      if(n.IsScalar()) {
+        item = new ConfigAtom();
+#ifdef VERBOSE
+        fprintf(stderr, "that: %lx\n", &w);
+#endif
+      } else if(n.IsSequence()) {
+        item = new ConfigVector();
+      } else if(n.IsMap()) {
+        item = new ConfigMap();
+      } else {
+        fprintf(stderr, "Unknown YAML::NodeType: %d\n", n.Type());
+        throw std::runtime_error("Could not create ConfigItem from unknown YAML::NodeType! " + n.Type());
+      }
+      //now fill the item:
+      item->parseFromYamlNode(n);
   }
 
   ConfigItem::ConfigItem(const ConfigItem &item) {
@@ -96,6 +118,48 @@ namespace configmaps {
 #endif
     delete item;
   }
+
+  ConfigItem ConfigItem::fromYamlStream(std::istream &in) {
+#ifdef YAML_03_API
+      YAML::Parser parser(in);
+      YAML::Node doc, node;
+      while(parser.GetNextDocument(doc)) {
+        if(doc.Type() == YAML::NodeType::Map) {
+          return parseConfigMapFromYamlNode(doc);
+        } else {
+#else
+      YAML::Node node = YAML::Load(in);
+#endif
+
+
+#ifdef YAML_03_API
+      // if there is no valid document return a empty ConfigMap
+      return ConfigMap();
+#else
+      return ConfigItem(node);
+#endif
+  }
+
+  ConfigItem ConfigItem::fromYamlFile(const std::string &filename, bool loadURI) {
+    std::ifstream fin(filename.c_str());
+    if(fin.fail()){
+        throw std::runtime_error("Failed to open File: " + filename);
+    }
+
+    ConfigItem retVal = fromYamlStream(fin);
+
+    if(loadURI) {
+      std::string pathToFile = getPathOfFile(filename);
+      recursiveLoad(retVal, pathToFile);
+    }
+    return retVal;
+  }
+
+  ConfigItem ConfigItem::fromYamlString(const std::string &s) {
+    std::istringstream sin(s);
+    return fromYamlStream(sin);
+  }
+
 
   std::vector<ConfigItem>::iterator ConfigItem::begin() {
     return getOrCreateVector()->begin();
@@ -320,34 +384,13 @@ namespace configmaps {
     return getOrCreateVector()->erase(it);
   }
 
-  /*
-  ConfigItem& ConfigItem::operator<<(const ConfigItem &value) {
-    if(!item) {
-      item = new ConfigVector();
-      item->setParentName(parentName);
-    }
-    ConfigVector *v = dynamic_cast<ConfigVector*>(item);
-    if(v) {
-      *v << value;
-      return *this;
-    }
-    throw 2;
-  }
-
-  ConfigItem& ConfigItem::operator<<(const ConfigAtom &value) {
-    return *this << (ConfigItem)value;
-  }
-  */
 
   ConfigItem& ConfigItem::operator+=(const ConfigItem &value) {
     *getOrCreateVector() += value;
     return *this;
   }
-  /*
-  ConfigItem& ConfigItem::operator+=(const ConfigAtom &value) {
-    return *this += (ConfigItem)value;
-  }
-  */
+
+
   std::string ConfigItem::getString() {
     return getOrCreateAtom()->getString();
   }
@@ -391,6 +434,7 @@ namespace configmaps {
     throw wrongTypeExp;
   }
 
+
   ConfigVector* ConfigItem::getOrCreateVector() {
     ConfigVector *v;
     if(!item) {
@@ -407,6 +451,61 @@ namespace configmaps {
     item = v;
     item->setParentName(parentName);
     return v;
+  }
+
+
+  /*/**********************
+   * Private Methods
+   ************************/
+
+  void ConfigItem::recursiveLoad(ConfigItem &item, std::string &path) {
+    if(item.isMap()) {
+    ConfigMap &map = item;
+
+      ConfigMap::iterator it = map.begin();
+      std::list<ConfigMap::iterator> eraseList;
+      std::list<ConfigMap::iterator>::iterator eraseIt;
+      for(; it!=map.end(); ++it) {
+        if(it->first == "URI") {
+          /*
+            fprintf(stderr, "ConfigMap::recursiveLoad: found uri: %s\n",
+            it->second[0].getString().c_str());
+          */
+          std::string file = path + (std::string)it->second;
+          std::string subPath = getPathOfFile(file);
+          ConfigItem m2 = fromYamlFile(file, true);
+          recursiveLoad(m2, subPath);
+          map.append(m2);
+          eraseList.push_back(it);
+        }
+        else {
+          recursiveLoad(it->second, path);
+        }
+      }
+      for(eraseIt=eraseList.begin(); eraseIt!=eraseList.end(); ++eraseIt) {
+        map.erase(*eraseIt);
+      }
+    } else {
+      ConfigVector &v = item;
+      if(item.isVector()) {
+        ConfigVector::iterator it = v.begin();
+        for(; it!= v.end(); ++it) {
+          recursiveLoad(*it, path);
+        }
+      }
+    }
+  }
+
+
+  // utility functions
+  std::string ConfigItem::getPathOfFile(const std::string &filename) {
+    std::string path = "./";
+    size_t pos;
+
+    if((pos = filename.rfind('/')) != std::string::npos) {
+      path = filename.substr(0, pos+1);
+    }
+    return path;
   }
 
 } // end of namespace configmaps

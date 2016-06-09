@@ -17,6 +17,8 @@ include_directories(${YAML_INCLUDE_DIRS})
 link_directories(${YAML_LIBRARY_DIRS})
 add_definitions(${YAML_CFLAGS_OTHER})  #flags excluding the ones with -I
 
+SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+
 if(${YAML_VERSION} EQUAL "0.3.0")
   add_definitions(-DYAML_03_API)
   message("       WARNING: The use of yaml 0.3 is deprecated!")

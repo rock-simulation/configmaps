@@ -31,6 +31,12 @@
 #include <yaml-cpp/yaml.h>
 #include "ConfigItem.hpp"
 
+//forwards:
+namespace YAML{
+    class Node;
+}
+
+
 namespace configmaps {
 
   class ConfigAtom : public ConfigBase {
@@ -282,6 +288,28 @@ namespace configmaps {
           emitter << " ";
       else
           emitter << s;
+    }
+
+
+    /**
+     * @brief Fills ConfigAtom item from YAML::Node.
+     * @param n The node containing the informations for the object.
+     * @throw Throws std::runtime_error if the type of the node is not scalar.
+     */
+    void parseFromYamlNode(const YAML::Node &n) {
+      if(n.Type() != YAML::NodeType::Scalar) {
+          throw std::runtime_error("Failed to create ConfigAtom Item, YAML::Node was not a scalar type!");
+      }
+#ifdef YAML_03_API
+        std::string s;
+        n.GetScalar(s);
+        item.setUnparsedString(s);
+#else
+      setUnparsedString(n.Scalar());
+#endif
+#ifdef VERBOSE
+        fprintf(stderr, "parsed atom: %s\n", s.c_str());
+#endif
     }
 
   private:

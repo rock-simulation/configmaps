@@ -22,3 +22,21 @@ void ConfigVector::dumpToYamlEmitter(YAML::Emitter &emitter) const {
   emitter << YAML::EndSeq;
   //}
 }
+
+
+void ConfigVector::parseFromYamlNode(const YAML::Node &n) {
+
+  if(n.Type() != YAML::NodeType::Sequence){
+      throw std::runtime_error("Failed to create config vector, given YAML::Node is not a sequence!");
+  }
+
+#ifdef YAML_03_API
+    YAML::Iterator it;
+#else
+    YAML::const_iterator it;
+#endif
+  for(it = n.begin(); it != n.end(); ++it) {
+    ConfigItem item(*it);
+    push_back(item);
+  }
+}

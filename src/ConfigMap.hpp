@@ -30,10 +30,14 @@
 #include "FIFOMap.h"
 #include "ConfigItem.hpp"
 
+//forwards:
+namespace YAML{
+    class Node;
+}
+
 namespace configmaps {
 
   // only functions used from misc.h
-  std::string getPathOfFile(const std::string &filename);
   std::string trim(const std::string& str);
 
   class ConfigMap : public ConfigBase,
@@ -59,6 +63,8 @@ namespace configmaps {
     }
 
     bool hasKey(std::string key);
+
+  //BLOCK OF DEPRECATED FUNCTIONS!!
     void toYamlStream(std::ostream &out) const;
     void toYamlFile(const std::string &filename) const;
     std::string toYamlString() const;
@@ -66,13 +72,19 @@ namespace configmaps {
     static ConfigMap fromYamlFile(const std::string &filename,
                                   bool loadURI = false);
     static ConfigMap fromYamlString(const std::string &s);
-    static void recursiveLoad(ConfigBase *item, std::string path);
+  //UP TO THESE LINE!
 
     /**
      * @brief Create YAML representation of this ConfigMap to a YAML::Emmitter.
      * @param emitter The output emitter. (parameter gets modified!).
      */
     virtual void dumpToYamlEmitter(YAML::Emitter &emitter) const;
+
+    /**
+     * @brief Fill the object with values from YAML node.
+     * @param n The node containing the data.
+     */
+    virtual void parseFromYamlNode(const YAML::Node &n);
 
     // checks if the key is in the list, if not return the given default value
     template<typename T> T get(const std::string &key,
