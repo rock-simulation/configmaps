@@ -157,6 +157,24 @@ namespace configmaps {
      */
     void dumpToYamlEmitter(YAML::Emitter &emitter) const;
 
+    /**
+     * @brief Writes YAML representation of the object to given output stream.
+     * @param out Stream to write on.
+     */
+    void toYamlStream(std::ostream &out) const;
+
+    /**
+     * @brief Serialize the object to a YAML stream and output it to given filename.
+     * @param filename The file will be created and the stream will be written into it.
+     */
+    void toYamlFile(const std::string &filename) const;
+
+    /**
+     * Writes a YAML serialization of the object into a string.
+     * @return The resulting YAML string.
+     */
+    std::string toYamlString() const;
+
     bool isAtom() const;
     bool isMap() const;
     bool isVector() const;

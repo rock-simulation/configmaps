@@ -214,6 +214,33 @@ namespace configmaps {
       item->dumpToYamlEmitter(emitter);
   }
 
+  void ConfigItem::toYamlStream(std::ostream &out) const {
+    YAML::Emitter emitter;
+    dumpToYamlEmitter(emitter);
+    if(!emitter.good()) {
+      fprintf(stderr, "ERROR: ConfigMap::toYamlStream failed!\n");
+      return;
+    }
+    out << emitter.c_str() << std::endl;
+  }
+
+  void ConfigItem::toYamlFile(const std::string &filename) const {
+    std::ofstream f(filename.c_str());
+    if(!f.good()) {
+      fprintf(stderr,
+              "ERROR: ConfigMap::toYamlFile failed! "
+              "Could not open output file \"%s\"\n", filename.c_str());
+      return;
+    }
+    toYamlStream(f);
+  }
+
+  std::string ConfigItem::toYamlString() const {
+    std::ostringstream sout;
+    toYamlStream(sout);
+    return sout.str();
+  }
+
   bool ConfigItem::isAtom() const {
     if(item) {
       ConfigAtom *m = dynamic_cast<ConfigAtom*>(item);
