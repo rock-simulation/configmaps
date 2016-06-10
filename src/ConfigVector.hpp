@@ -29,6 +29,7 @@
 #include <vector>
 
 #include "ConfigItem.hpp"
+#include "ConfigBase.hpp"
 
 namespace configmaps {
 
@@ -38,6 +39,11 @@ namespace configmaps {
 
     ConfigVector(std::string s) : ConfigBase(s) {}
     ConfigVector() {}
+    /**
+     * @brief Create and fill the object with values from given YAML::Node.
+     * @param n The YAML::Node containing the serialized data for this object.
+     */
+    ConfigVector(const YAML::Node &n);
 
     size_t append(const ConfigItem &item) {
       this->push_back(item);
@@ -62,12 +68,6 @@ namespace configmaps {
      * @param emitter The emitter to wich the configVector yaml will be added (modifies parameter!).
      */
     virtual void dumpToYamlEmitter(YAML::Emitter &emitter) const;
-
-    /**
-     * @brief Fill the object with values from given YAML::Node.
-     * @param n The YAML::Node containing the serialized data for this object.
-     */
-    void parseFromYamlNode(const YAML::Node &n);
 
   }; // end of class ConfigVector
 

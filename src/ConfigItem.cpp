@@ -24,6 +24,7 @@
 #include "ConfigAtom.hpp"
 #include <sstream>
 #include <fstream>
+#include <exception>
 
 //#define VERBOSE
 
@@ -40,20 +41,18 @@ namespace configmaps {
       ///@todo implement me!
       //create correct object type for the item:
       if(n.IsScalar()) {
-        item = new ConfigAtom();
-#ifdef VERBOSE
-        fprintf(stderr, "that: %lx\n", &w);
-#endif
+          item = new ConfigAtom(n);
+          std::cout << "is atom" << std::endl;
       } else if(n.IsSequence()) {
-        item = new ConfigVector();
+          item = new ConfigVector(n);
+          std::cout << "is vector" << std::endl;
       } else if(n.IsMap()) {
-        item = new ConfigMap();
+          std::cout << "is map" << std::endl;
+          item = new ConfigMap(n);
       } else {
         fprintf(stderr, "Unknown YAML::NodeType: %d\n", n.Type());
         throw std::runtime_error("Could not create ConfigItem from unknown YAML::NodeType! " + n.Type());
       }
-      //now fill the item:
-      item->parseFromYamlNode(n);
   }
 
   ConfigItem::ConfigItem(const ConfigItem &item) {
@@ -120,24 +119,22 @@ namespace configmaps {
   }
 
   ConfigItem ConfigItem::fromYamlStream(std::istream &in) {
-#ifdef YAML_03_API
-      YAML::Parser parser(in);
-      YAML::Node doc, node;
-      while(parser.GetNextDocument(doc)) {
-        if(doc.Type() == YAML::NodeType::Map) {
-          return parseConfigMapFromYamlNode(doc);
-        } else {
-#else
       YAML::Node node = YAML::Load(in);
-#endif
-
-
-#ifdef YAML_03_API
-      // if there is no valid document return a empty ConfigMap
-      return ConfigMap();
-#else
-      return ConfigItem(node);
-#endif
+      ConfigItem bla = ConfigItem(node);
+      if(bla.isMap()){
+          ConfigMap *blub = bla;
+          std::cout << "after creation configItem has size: " << bla.size() << std::endl;
+          std::cout << "blub has size: " << blub->size() << std::endl;
+          if(blub->hasKey("tasks")){
+              std::cout << "key is there" << std::endl;
+          }else{
+              std::cout << "key is NOT there" << std::endl;
+          }
+          for(configmaps::FIFOMap<std::string,ConfigItem>::iterator it = blub->begin(); it != blub->end(); it++ ){
+                    std::cout << "Item: " << it->first << std::endl;
+          }
+      }
+      return bla;
   }
 
   ConfigItem ConfigItem::fromYamlFile(const std::string &filename, bool loadURI) {
@@ -209,8 +206,10 @@ namespace configmaps {
     return (find(key) != endMap());
   }
 
-
   void ConfigItem::dumpToYamlEmitter(YAML::Emitter &emitter) const{
+      if(!item){
+          throw std::runtime_error("Item not set while toYamlStream was requested!");
+      }
       item->dumpToYamlEmitter(emitter);
   }
 
@@ -439,7 +438,7 @@ namespace configmaps {
       ConfigVector *v = dynamic_cast<ConfigVector*>(item);
       if(v) return v->size();
       ConfigMap *m = dynamic_cast<ConfigMap*>(item);
-      if(m) return v->size();
+      if(m) return m->size();
       ConfigAtom *a = dynamic_cast<ConfigAtom*>(item);
       if(a) return 1;
     }

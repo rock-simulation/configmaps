@@ -29,6 +29,7 @@
 #include <string>
 #include <vector>
 #include "FIFOMap.h"
+#include "ConfigBase.hpp"
 
 
 //forwards:
@@ -40,31 +41,8 @@ namespace YAML{
 namespace configmaps {
 
   class ConfigMap;
-  class ConfigVector;
   class ConfigAtom;
-  class ConfigItem;
-
-  class ConfigBase {
-  public:
-    virtual ~ConfigBase() {}
-    ConfigBase(std::string s) : parentName(s) {}
-    ConfigBase() : parentName("") {}
-
-    inline void setParentName(std::string s) {
-      parentName = s;
-    }
-
-    inline const std::string& getParentName() const {
-      return parentName;
-    }
-
-    virtual void dumpToYamlEmitter(YAML::Emitter &emitter) const = 0;
-    virtual void parseFromYamlNode(const YAML::Node &n) = 0;
-
-    protected:
-      std::string parentName;
-
-  }; // end of class ConfigBase
+  class ConfigVector;
 
 
   /**

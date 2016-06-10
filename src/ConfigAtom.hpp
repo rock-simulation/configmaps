@@ -29,7 +29,7 @@
 #include <stdexcept>
 #include <cstdio>
 #include <yaml-cpp/yaml.h>
-#include "ConfigItem.hpp"
+#include "ConfigBase.hpp"
 
 //forwards:
 namespace YAML{
@@ -77,6 +77,20 @@ namespace configmaps {
                                            uValue(0), dValue(0.0),
                                            sValue(val), parsed(false),
                                            type(UNDEFINED_TYPE) {}
+    /**
+     * @brief Fills ConfigAtom item from YAML::Node.
+     * @param n The node containing the informations for the object.
+     * @throw Throws std::runtime_error if the type of the node is not scalar.
+     */
+    ConfigAtom(const YAML::Node &n) {
+        if(n.Type() != YAML::NodeType::Scalar) {
+            throw std::runtime_error("Failed to create ConfigAtom Item, YAML::Node was not a scalar type!");
+        }
+        setUnparsedString(n.Scalar());
+//#ifdef VERBOSE
+        std::cout << "Atom Item created: " << this->toString() << std::endl;
+//#endif
+    }
 
     operator int () {
       return getInt();
@@ -288,28 +302,6 @@ namespace configmaps {
           emitter << " ";
       else
           emitter << s;
-    }
-
-
-    /**
-     * @brief Fills ConfigAtom item from YAML::Node.
-     * @param n The node containing the informations for the object.
-     * @throw Throws std::runtime_error if the type of the node is not scalar.
-     */
-    void parseFromYamlNode(const YAML::Node &n) {
-      if(n.Type() != YAML::NodeType::Scalar) {
-          throw std::runtime_error("Failed to create ConfigAtom Item, YAML::Node was not a scalar type!");
-      }
-#ifdef YAML_03_API
-        std::string s;
-        n.GetScalar(s);
-        item.setUnparsedString(s);
-#else
-      setUnparsedString(n.Scalar());
-#endif
-#ifdef VERBOSE
-        fprintf(stderr, "parsed atom: %s\n", s.c_str());
-#endif
     }
 
   private:

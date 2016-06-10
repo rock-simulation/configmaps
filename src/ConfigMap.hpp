@@ -22,57 +22,60 @@
 #define CONFIG_MAP_HPP
 
 #ifdef _PRINT_HEADER_
-  #warning "ConfigMap.hpp"
+#warning "ConfigMap.hpp"
 #endif
 
 #include <string>
 
 #include "FIFOMap.h"
 #include "ConfigItem.hpp"
+#include "ConfigBase.hpp"
 
 //forwards:
-namespace YAML{
+namespace YAML {
     class Node;
 }
 
 namespace configmaps {
 
-  // only functions used from misc.h
-  std::string trim(const std::string& str);
+// only functions used from misc.h
+std::string trim(const std::string& str);
 
-  class ConfigMap : public ConfigBase,
-                    public FIFOMap<std::string, ConfigItem> {
-  public:
-    ConfigItem& operator[](const std::string &name) {
-      ConfigItem &w = FIFOMap<std::string, ConfigItem>::operator[](name);
-      
-      if(find(name) == end()) {
-        w.setParentName(name);
-      }
-      
-      return w;
+class ConfigMap: public ConfigBase, public FIFOMap<std::string, ConfigItem> {
+public:
+    /**
+     * @brief Create and fill the object with values from YAML node.
+     * @param n The node containing the data.
+     */
+    ConfigMap(const YAML::Node &n);
+
+    ConfigMap(){};
+
+    ConfigItem& operator[](const std::string &name){
+        ConfigItem &w = FIFOMap<std::string, ConfigItem>::operator[](name);
+
+        if(find(name) == end()){
+            w.setParentName(name);
+        }
+
+        return w;
     }
 
-    ConfigItem& operator[](const char *name) {
-      ConfigItem &w = FIFOMap<std::string, ConfigItem>::operator[](name);
-      if(find(name) == end()) {
-        w.setParentName(name);
-      }
+    ConfigItem& operator[](const char *name){
+        ConfigItem &w = FIFOMap<std::string, ConfigItem>::operator[](name);
+        if(find(name) == end()){
+            w.setParentName(name);
+        }
 
-      return w;
+        return w;
     }
 
     bool hasKey(std::string key);
 
-  //BLOCK OF DEPRECATED FUNCTIONS!!
-    void toYamlStream(std::ostream &out) const;
-    void toYamlFile(const std::string &filename) const;
-    std::string toYamlString() const;
+
     static ConfigMap fromYamlStream(std::istream &in);
-    static ConfigMap fromYamlFile(const std::string &filename,
-                                  bool loadURI = false);
+    static ConfigMap fromYamlFile(const std::string &filename, bool loadURI = false);
     static ConfigMap fromYamlString(const std::string &s);
-  //UP TO THESE LINE!
 
     /**
      * @brief Create YAML representation of this ConfigMap to a YAML::Emmitter.
@@ -80,33 +83,25 @@ namespace configmaps {
      */
     virtual void dumpToYamlEmitter(YAML::Emitter &emitter) const;
 
-    /**
-     * @brief Fill the object with values from YAML node.
-     * @param n The node containing the data.
-     */
-    virtual void parseFromYamlNode(const YAML::Node &n);
-
     // checks if the key is in the list, if not return the given default value
-    template<typename T> T get(const std::string &key,
-                               const T &defaultValue) {
-      if(find(key) != end()) {
-        return (T)(*this)[key];
-      }
-      return defaultValue;
+    template<typename T> T get(const std::string &key, const T &defaultValue){
+        if(find(key) != end()){
+            return (T) (*this)[key];
+        }
+        return defaultValue;
     }
 
     // checks if the key is in the list, if not add the given default value
     // and return it
-    template<typename T> T getOrCreate(const std::string &key,
-                                       const T &defaultValue) {
-      if(find(key) != end()) {
-        return (T)(*this)[key];
-      }
-      (*this)[key] = defaultValue;
-      return defaultValue;
+    template<typename T> T getOrCreate(const std::string &key, const T &defaultValue){
+        if(find(key) != end()){
+            return (T) (*this)[key];
+        }
+        (*this)[key] = defaultValue;
+        return defaultValue;
     }
 
-  };
+};
 } // end of namespace configmaps
 
 #endif // CONFIG_MAP_H

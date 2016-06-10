@@ -28,6 +28,7 @@ set(SOURCES
     src/ConfigMap.cpp
     src/ConfigItem.cpp
     src/ConfigVector.cpp
+    src/ConfigBase.cpp
 )
 set(HEADERS
     src/ConfigData.h
@@ -35,6 +36,7 @@ set(HEADERS
     src/ConfigVector.hpp
     src/ConfigItem.hpp
     src/ConfigAtom.hpp
+    src/ConfigBase.hpp
     src/FIFOMap.h
 )
 
