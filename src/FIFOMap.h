@@ -89,7 +89,7 @@ namespace configmaps {
 //    template <class... Args>
 //      std::pair<iterator,bool> emplace (Args&&... args){
 #if __cplusplus > 199711L
-      virtual std::pair<iterator,bool> emplace (std::string &key, T value){
+      virtual std::pair<iterator,bool> emplace (Key &key, T value){
           std::pair<mapIterator, bool> tmp;
           tmp = std::map<Key, T>::emplace(key, value);
           if(tmp.second){
