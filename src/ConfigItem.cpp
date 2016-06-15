@@ -42,12 +42,9 @@ namespace configmaps {
       //create correct object type for the item:
       if(n.IsScalar()) {
           item = new ConfigAtom(n);
-          std::cout << "is atom" << std::endl;
       } else if(n.IsSequence()) {
           item = new ConfigVector(n);
-          std::cout << "is vector" << std::endl;
       } else if(n.IsMap()) {
-          std::cout << "is map" << std::endl;
           item = new ConfigMap(n);
       } else {
         fprintf(stderr, "Unknown YAML::NodeType: %d\n", n.Type());
@@ -120,21 +117,7 @@ namespace configmaps {
 
   ConfigItem ConfigItem::fromYamlStream(std::istream &in) {
       YAML::Node node = YAML::Load(in);
-      ConfigItem bla = ConfigItem(node);
-      if(bla.isMap()){
-          ConfigMap *blub = bla;
-          std::cout << "after creation configItem has size: " << bla.size() << std::endl;
-          std::cout << "blub has size: " << blub->size() << std::endl;
-          if(blub->hasKey("tasks")){
-              std::cout << "key is there" << std::endl;
-          }else{
-              std::cout << "key is NOT there" << std::endl;
-          }
-          for(configmaps::FIFOMap<std::string,ConfigItem>::iterator it = blub->begin(); it != blub->end(); it++ ){
-                    std::cout << "Item: " << it->first << std::endl;
-          }
-      }
-      return bla;
+      return ConfigItem(node);
   }
 
   ConfigItem ConfigItem::fromYamlFile(const std::string &filename, bool loadURI) {

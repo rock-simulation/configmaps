@@ -26,10 +26,7 @@ namespace configmaps {
                 continue;
             //if not null:
             (*this).emplace(key, ConfigItem(it->second));
-            std::cout << "key: " << key << std::endl;
-            std::cout << "value: " << this->hasKey(key) << std::endl;
         }
-        std::cout << "Size of config map after creating: " << this->size() << std::endl;
     }
 
     ConfigMap ConfigMap::fromYamlStream(std::istream &in){
