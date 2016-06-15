@@ -87,9 +87,9 @@ namespace configmaps {
             throw std::runtime_error("Failed to create ConfigAtom Item, YAML::Node was not a scalar type!");
         }
         setUnparsedString(n.Scalar());
-//#ifdef VERBOSE
+#ifdef VERBOSE
         std::cout << "Atom Item created: " << this->toString() << std::endl;
-//#endif
+#endif
     }
 
     operator int () {
