@@ -31,6 +31,7 @@
 #include <iostream>
 #include <algorithm>
 #include <utility>
+#include <stdexcept>
 
 namespace configmaps {
 
@@ -71,6 +72,7 @@ namespace configmaps {
       FIFOMap(const FIFOMap<Key, T> &other)
       { *this = other; }
       FIFOMap<Key, T>& operator=(const FIFOMap<Key, T> &other);
+      virtual ~FIFOMap(){};
 
       /* element access */
       T& operator[](const Key &x);
@@ -86,14 +88,15 @@ namespace configmaps {
       */
 //    template <class... Args>
 //      std::pair<iterator,bool> emplace (Args&&... args){
-      std::pair<iterator,bool> emplace (std::string &key, T value){
+#if __cplusplus > 199711L
+      virtual std::pair<iterator,bool> emplace (std::string &key, T value){
           std::pair<mapIterator, bool> tmp;
           tmp = std::map<Key, T>::emplace(key, value);
           if(tmp.second){
               insertOrder.push_back(FIFOItem<Key, T>(tmp.first->first, tmp.first->second));
               return std::make_pair(--insertOrder.end(), true);
           }else{
-              for(auto it = insertOrder.begin(); it != insertOrder.end(); it++ ){
+              for(iterator it = insertOrder.begin(); it != insertOrder.end(); it++ ){
                   if(it->first == tmp.first->first){
                       return std::make_pair(it, false);
                   }
@@ -101,6 +104,7 @@ namespace configmaps {
               throw std::runtime_error("FIFO Map structure corrupted, key was found in the map but not in the key list");
           }
       }
+#endif
     
       void erase(iterator position);
       size_t erase(const Key &x);
