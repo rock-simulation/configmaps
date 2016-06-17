@@ -468,37 +468,32 @@ namespace configmaps {
    ************************/
 
   void ConfigItem::recursiveLoad(ConfigItem &item, std::string &path) {
+
     if(item.isMap()) {
     ConfigMap &map = item;
-
-      ConfigMap::iterator it = map.begin();
+      ConfigMap::iterator it = item.beginMap();
       std::list<ConfigMap::iterator> eraseList;
       std::list<ConfigMap::iterator>::iterator eraseIt;
-      for(; it!=map.end(); ++it) {
+      for(; it!=item.endMap(); ++it) {
         if(it->first == "URI") {
-          /*
-            fprintf(stderr, "ConfigMap::recursiveLoad: found uri: %s\n",
-            it->second[0].getString().c_str());
-          */
+
           std::string file = path + (std::string)it->second;
           std::string subPath = getPathOfFile(file);
           ConfigItem m2 = fromYamlFile(file, true);
           recursiveLoad(m2, subPath);
           map.append(m2);
           eraseList.push_back(it);
-        }
-        else {
+        }else {
           recursiveLoad(it->second, path);
         }
       }
       for(eraseIt=eraseList.begin(); eraseIt!=eraseList.end(); ++eraseIt) {
-        map.erase(*eraseIt);
+              map.erase(*eraseIt);
       }
     } else {
-      ConfigVector &v = item;
       if(item.isVector()) {
-        ConfigVector::iterator it = v.begin();
-        for(; it!= v.end(); ++it) {
+          std::vector<ConfigItem>::iterator it = ((ConfigVector&)item).begin();
+        for(; it!= ((ConfigVector&)item).end(); ++it) {
           recursiveLoad(*it, path);
         }
       }
