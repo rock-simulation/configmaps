@@ -28,7 +28,9 @@
 #include <string>
 #include <stdexcept>
 #include <cstdio>
+#ifndef Q_MOC_RUN
 #include <yaml-cpp/yaml.h>
+#endif
 #include "ConfigBase.hpp"
 
 //forwards:
