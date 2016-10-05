@@ -54,7 +54,9 @@ namespace configmaps {
 
   ConfigItem::ConfigItem(const ConfigItem &item) {
     this->item = NULL;
-    *this = *item.item;
+    if(item.item) {
+      *this = *item.item;
+    }
 #ifdef VERBOSE
     fprintf(stderr, "new d %lx %lx\n", (unsigned long)this->item, (unsigned long)this);
 #endif
@@ -69,7 +71,16 @@ namespace configmaps {
   }
 
   ConfigItem& ConfigItem::operator=(const ConfigItem& item) {
-    return *this = *item.item;
+    if(item.item) {
+      return *this = *item.item;
+    }
+    else {
+      if(this->item) {
+        delete this->item;
+        this->item = NULL;
+      }
+      return *this;
+    }
   }
 
   ConfigItem& ConfigItem::operator=(const ConfigBase& item) {
