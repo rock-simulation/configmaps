@@ -200,6 +200,19 @@ namespace configmaps {
     return (find(key) != endMap());
   }
 
+  void ConfigItem::erase(FIFOMap<std::string, ConfigItem>::iterator &it) {
+    if(!item) {
+      item = new ConfigMap();
+      item->setParentName(parentName);
+    }
+    ConfigMap *v = dynamic_cast<ConfigMap*>(item);
+    if(v) {
+      v->erase(it);
+      return;
+    }
+    throw wrongTypeExp;
+  }
+
   void ConfigItem::dumpToYamlEmitter(YAML::Emitter &emitter) const{
       if(!item){
           throw std::runtime_error("Item not set while toYamlStream was requested!");
