@@ -56,6 +56,14 @@ namespace configmaps {
 
     ConfigMap ConfigMap::fromYamlFile(const string &filename, bool loadURI) {
       std::ifstream fin(filename.c_str());
+      if (!fin.good()) {
+          fprintf(stderr, "ERROR: ConfigMap::fromYamlFile failed! "
+                          "Could not open input file \"%s\"\n",
+                  filename.c_str());
+          // wouldn't it be better to throw? the returned map is empty, which
+          // might not be what the caller actually wants?
+          return ConfigMap();
+      }
       ConfigMap map = fromYamlStream(fin);
       if(loadURI) {
         std::string pathToFile = getPathOfFile(filename);
