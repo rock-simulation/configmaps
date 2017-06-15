@@ -29,6 +29,19 @@ namespace configmaps {
         }
     }
 
+  ConfigMap::ConfigMap(const Json::Value &v){
+
+    for(Json::Value::const_iterator it = v.begin(); it != v.end(); ++it){
+
+      std::string key = it.name();
+
+      if(it->isNull())
+        continue;
+      //if not null:
+      (*this).emplace(key, ConfigItem(*it));
+    }
+  }
+
     ConfigMap ConfigMap::fromYamlStream(std::istream &in){
         ConfigItem item = ConfigItem::fromYamlStream(in);
         if(!item.isMap()){
@@ -53,6 +66,20 @@ namespace configmaps {
         return fromYamlStream(sin);
     }
 
+  ConfigMap ConfigMap::fromJsonStream(std::istream &in){
+    ConfigItem item = ConfigItem::fromJsonStream(in);
+    if(!item.isMap()){
+      throw std::invalid_argument("Given input stream does not have map as root element in YAML!");
+    }
+    ConfigMap map = item;
+    return map;
+  }
+
+  ConfigMap ConfigMap::fromJsonString(const string &s){
+    std::istringstream sin(s);
+    return fromJsonStream(sin);
+  }
+
     void ConfigMap::dumpToYamlEmitter(YAML::Emitter &emitter) const{
         emitter << YAML::BeginMap;
         ConfigMap::const_iterator it;
@@ -68,6 +95,15 @@ namespace configmaps {
             it->second.dumpToYamlEmitter(emitter);
         }
         emitter << YAML::EndMap;
+    }
+
+    void ConfigMap::dumpToJsonValue(Json::Value &root) const{
+        ConfigMap::const_iterator it;
+        for(it = this->begin(); it != this->end(); ++it){
+          Json::Value n;
+          it->second.dumpToJsonValue(n);
+          root[it->first] = n;
+        }
     }
 
     /***************************

@@ -32,13 +32,13 @@ std::string ConfigBase::toYamlString() const{
   return sout.str();
 }
 
-void ConfigBase::toJsonStream(std::ostream &out) {
+void ConfigBase::toJsonStream(std::ostream &out) const {
   Json::Value root;
   dumpToJsonValue(root);
-  out << root.c_str() << std::endl;
+  out << root.toStyledString() << std::endl;
 }
 
-std::string ConfigBase::toJsonString() {
+std::string ConfigBase::toJsonString() const {
   std::ostringstream sout;
   toJsonStream(sout);
   return sout.str();

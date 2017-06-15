@@ -90,6 +90,10 @@ namespace configmaps {
 #endif
     }
 
+    ConfigAtom(const Json::Value &v) {
+      setUnparsedString(v.asString());
+    }
+
     operator int () {
       return getInt();
     }
@@ -308,9 +312,9 @@ namespace configmaps {
       fprintf(stderr, "dump: %s\n", s.c_str());
 #endif
       if(s.empty())
-          root << " ";
+          root = " ";
       else
-          root << s;
+          root = s;
     }
 
   private:

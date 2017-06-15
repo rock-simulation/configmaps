@@ -82,6 +82,7 @@ namespace configmaps {
      * @throw Will throw runtime Error if the YAML::Node type is unknown!
      */
     ConfigItem(const YAML::Node &n);
+    ConfigItem(const Json::Value &v);
     ConfigItem(const ConfigItem &item);
     ConfigItem(const ConfigBase &item);
     ~ConfigItem();
@@ -115,6 +116,9 @@ namespace configmaps {
      * @return ConfigItem filled by whatever we got from the string.
      */
     static ConfigItem fromYamlString(const std::string &s);
+
+    static ConfigItem fromJsonStream(std::istream &in);
+    static ConfigItem fromJsonString(const std::string &s);
 
     operator const ConfigBase& () const {return *item;}
     operator ConfigBase& () {return *item;}

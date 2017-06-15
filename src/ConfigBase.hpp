@@ -36,7 +36,7 @@ namespace configmaps {
     virtual void dumpToJsonValue(Json::Value &root) const = 0;
 
     void toJsonStream(std::ostream &out) const;
-    std::string toYamlJson() const;
+    std::string toJsonString() const;
 
     protected:
       std::string parentName;

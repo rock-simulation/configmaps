@@ -31,6 +31,15 @@
 #include "ConfigItem.hpp"
 #include "ConfigBase.hpp"
 
+//forwards:
+namespace YAML {
+    class Node;
+}
+
+namespace Json {
+    class Value;
+}
+
 namespace configmaps {
 
   class ConfigVector : public ConfigBase,
@@ -44,6 +53,12 @@ namespace configmaps {
      * @param n The YAML::Node containing the serialized data for this object.
      */
     ConfigVector(const YAML::Node &n);
+
+    /**
+     * @brief Create and fill the object with values from given Json::Value.
+     * @param v The Json::Value containing the serialized data for this object.
+     */
+    ConfigVector(const Json::Value &n);
 
     size_t append(const ConfigItem &item) {
       this->push_back(item);
@@ -68,6 +83,12 @@ namespace configmaps {
      * @param emitter The emitter to wich the configVector yaml will be added (modifies parameter!).
      */
     virtual void dumpToYamlEmitter(YAML::Emitter &emitter) const;
+
+    /**
+     * @brief Create JSON representation dumped into the given value.
+     * @param root The value to wich the configVector json will be added (modifies parameter!).
+     */
+    virtual void dumpToJsonValue(Json::Value &root) const;
 
   }; // end of class ConfigVector
 

@@ -35,6 +35,9 @@
 namespace YAML {
     class Node;
 }
+namespace Json {
+    class Value;
+}
 
 namespace configmaps {
 
@@ -48,6 +51,12 @@ public:
      * @param n The node containing the data.
      */
     ConfigMap(const YAML::Node &n);
+
+    /**
+     * @brief Create and fill the object with values from Json value.
+     * @param v The value containing the data.
+     */
+    ConfigMap(const Json::Value &v);
 
     ConfigMap(){};
 
@@ -76,12 +85,20 @@ public:
     static ConfigMap fromYamlStream(std::istream &in);
     static ConfigMap fromYamlFile(const std::string &filename, bool loadURI = false);
     static ConfigMap fromYamlString(const std::string &s);
+    static ConfigMap fromJsonStream(std::istream &in);
+    static ConfigMap fromJsonString(const std::string &s);
 
     /**
      * @brief Create YAML representation of this ConfigMap to a YAML::Emmitter.
      * @param emitter The output emitter. (parameter gets modified!).
      */
     virtual void dumpToYamlEmitter(YAML::Emitter &emitter) const;
+
+    /**
+     * @brief Create Json representation of this ConfigMap to a Json::Value.
+     * @param root The output value. (parameter gets modified!).
+     */
+    virtual void dumpToJsonValue(Json::Value &root) const;
 
     // checks if the key is in the list, if not return the given default value
     template<typename T> T get(const std::string &key, const T &defaultValue){

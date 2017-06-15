@@ -37,19 +37,35 @@ namespace configmaps {
 #endif
   }
 
-  ConfigItem::ConfigItem(const YAML::Node &n){
-      ///@todo implement me!
-      //create correct object type for the item:
-      if(n.IsScalar()) {
-          item = new ConfigAtom(n);
-      } else if(n.IsSequence()) {
-          item = new ConfigVector(n);
-      } else if(n.IsMap()) {
-          item = new ConfigMap(n);
-      } else {
-        fprintf(stderr, "Unknown YAML::NodeType: %d\n", n.Type());
-        throw std::runtime_error("Could not create ConfigItem from unknown YAML::NodeType! " + n.Type());
-      }
+  ConfigItem::ConfigItem(const YAML::Node &n) {
+    ///@todo implement me!
+    //create correct object type for the item:
+    if(n.IsScalar()) {
+      item = new ConfigAtom(n);
+    } else if(n.IsSequence()) {
+      item = new ConfigVector(n);
+    } else if(n.IsMap()) {
+      item = new ConfigMap(n);
+    } else {
+      char error[128];
+      sprintf(error, "Could not create ConfigItem from unknown YAML::NodeType! %d", n.Type());
+      fprintf(stderr, "%s\n", error);
+      throw std::runtime_error(error);
+    }
+  }
+
+  ConfigItem::ConfigItem(const Json::Value &v) {
+    ///@todo implement me!
+    //create correct object type for the item:
+    if(v.isArray()) {
+      item = new ConfigVector(v);
+    }
+    else if(v.isObject()) {
+      item = new ConfigMap(v);
+    }
+    else {
+      item = new ConfigAtom(v);
+    }
   }
 
   ConfigItem::ConfigItem(const ConfigItem &item) {
@@ -151,6 +167,16 @@ namespace configmaps {
     return fromYamlStream(sin);
   }
 
+  ConfigItem ConfigItem::fromJsonStream(std::istream &in) {
+    Json::Value v;
+    in >> v;
+    return ConfigItem(v);
+  }
+
+  ConfigItem ConfigItem::fromJsonString(const std::string &s) {
+    std::istringstream sin(s);
+    return fromJsonStream(sin);
+  }
 
   std::vector<ConfigItem>::iterator ConfigItem::begin() {
     return getOrCreateVector()->begin();
@@ -243,7 +269,7 @@ namespace configmaps {
   void ConfigItem::toJsonStream(std::ostream &out) const {
     Json::Value root;
     dumpToJsonValue(root);
-    out << emitter.c_str() << std::endl;
+    out << root.toStyledString() << std::endl;
   }
 
   void ConfigItem::toYamlFile(const std::string &filename) const {
