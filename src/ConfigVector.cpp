@@ -5,17 +5,17 @@
 
 using namespace configmaps;
 
-ConfigVector::ConfigVector(const YAML::Node &n){
+ConfigVector::ConfigVector(const YAML::Node &n) {
 
-    if(n.Type() != YAML::NodeType::Sequence){
-        throw std::runtime_error("Failed to create config vector, given YAML::Node is not a sequence!");
-    }
+  if(n.Type() != YAML::NodeType::Sequence){
+    throw std::runtime_error("Failed to create config vector, given YAML::Node is not a sequence!");
+  }
 
-//    YAML::const_iterator it;
-    for(auto &it : n){ //it = n.begin(); it != n.end(); ++it){
-        ConfigItem item(it);
-        push_back(item);
-    }
+  //    YAML::const_iterator it;
+  for(auto &it : n){ //it = n.begin(); it != n.end(); ++it){
+    ConfigItem item(it);
+    push_back(item);
+  }
 }
 
 ConfigVector::ConfigVector(const Json::Value &v) {
@@ -29,26 +29,26 @@ ConfigVector::ConfigVector(const Json::Value &v) {
   }
 }
 
-void ConfigVector::dumpToYamlEmitter(YAML::Emitter &emitter) const{
+void ConfigVector::dumpToYamlEmitter(YAML::Emitter &emitter) const {
 
-    emitter << YAML::BeginSeq;
+  emitter << YAML::BeginSeq;
 
-    if(!(emitter.good() && 1)){
-        std::string s = getParentName();
-        std::cerr << "problem with ConfigVector for: " << std::endl << s.c_str() << std::endl;
-    }
-    assert(emitter.good() && 1);
-    for(unsigned int i = 0; i < size(); ++i){
-        const ConfigItem &w = at(i);
-        const ConfigBase &item = w;
-        item.dumpToYamlEmitter(emitter);
-    }
-    //if(vec.size() > 1 || do_sequence) {
-    emitter << YAML::EndSeq;
-    //}
+  if(!(emitter.good() && 1)){
+    std::string s = getParentName();
+    std::cerr << "problem with ConfigVector for: " << std::endl << s.c_str() << std::endl;
+  }
+  assert(emitter.good() && 1);
+  for(unsigned int i = 0; i < size(); ++i){
+    const ConfigItem &w = at(i);
+    const ConfigBase &item = w;
+    item.dumpToYamlEmitter(emitter);
+  }
+  //if(vec.size() > 1 || do_sequence) {
+  emitter << YAML::EndSeq;
+  //}
 }
 
-void ConfigVector::dumpToJsonValue(Json::Value &root) const{
+void ConfigVector::dumpToJsonValue(Json::Value &root) const {
 
   for(unsigned int i = 0; i < size(); ++i){
     const ConfigItem &w = at(i);

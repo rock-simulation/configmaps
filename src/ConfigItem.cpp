@@ -143,14 +143,14 @@ namespace configmaps {
   }
 
   ConfigItem ConfigItem::fromYamlStream(std::istream &in) {
-      YAML::Node node = YAML::Load(in);
-      return ConfigItem(node);
+    YAML::Node node = YAML::Load(in);
+    return ConfigItem(node);
   }
 
   ConfigItem ConfigItem::fromYamlFile(const std::string &filename, bool loadURI) {
     std::ifstream fin(filename.c_str());
     if(fin.fail()){
-        throw std::runtime_error("Failed to open File: " + filename);
+      throw std::runtime_error("Failed to open File: " + filename);
     }
 
     ConfigItem retVal = fromYamlStream(fin);
@@ -242,11 +242,11 @@ namespace configmaps {
     throw wrongTypeExp;
   }
 
-  void ConfigItem::dumpToYamlEmitter(YAML::Emitter &emitter) const{
-      if(!item){
-        throw std::runtime_error("Item not set while toYamlStream was requested!");
-      }
-      item->dumpToYamlEmitter(emitter);
+  void ConfigItem::dumpToYamlEmitter(YAML::Emitter &emitter) const {
+    if(!item){
+      throw std::runtime_error("Item not set while toYamlStream was requested!");
+    }
+    item->dumpToYamlEmitter(emitter);
   }
 
   void ConfigItem::toYamlStream(std::ostream &out) const {
@@ -260,10 +260,10 @@ namespace configmaps {
   }
 
   void ConfigItem::dumpToJsonValue(Json::Value &root) const{
-      if(!item){
-        throw std::runtime_error("Item not set while toYamlStream was requested!");
-      }
-      item->dumpToJsonValue(root);
+    if(!item){
+      throw std::runtime_error("Item not set while toYamlStream was requested!");
+    }
+    item->dumpToJsonValue(root);
   }
 
   void ConfigItem::toJsonStream(std::ostream &out) const {
@@ -548,7 +548,7 @@ namespace configmaps {
   void ConfigItem::recursiveLoad(ConfigItem &item, std::string &path) {
 
     if(item.isMap()) {
-    ConfigMap &map = item;
+      ConfigMap &map = item;
       ConfigMap::iterator it = item.beginMap();
       std::list<ConfigMap::iterator> eraseList;
       std::list<ConfigMap::iterator>::iterator eraseIt;
@@ -566,11 +566,11 @@ namespace configmaps {
         }
       }
       for(eraseIt=eraseList.begin(); eraseIt!=eraseList.end(); ++eraseIt) {
-              map.erase(*eraseIt);
+        map.erase(*eraseIt);
       }
     } else {
       if(item.isVector()) {
-          std::vector<ConfigItem>::iterator it = ((ConfigVector&)item).begin();
+        std::vector<ConfigItem>::iterator it = ((ConfigVector&)item).begin();
         for(; it!= ((ConfigVector&)item).end(); ++it) {
           recursiveLoad(*it, path);
         }

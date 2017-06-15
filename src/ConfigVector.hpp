@@ -22,7 +22,7 @@
 #define CONFIG_VECTOR_HPP
 
 #ifdef _PRINT_HEADER_
-  #warning "ConfigVector.hpp"
+#warning "ConfigVector.hpp"
 #endif
 
 #include <string>
@@ -33,11 +33,11 @@
 
 //forwards:
 namespace YAML {
-    class Node;
+  class Node;
 }
 
 namespace Json {
-    class Value;
+  class Value;
 }
 
 namespace configmaps {

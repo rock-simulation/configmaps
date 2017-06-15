@@ -22,7 +22,7 @@
 #define CONFIG_ATOM_HPP
 
 #ifdef _PRINT_HEADER_
-  #warning "ConfigAtom.hpp"
+#warning "ConfigAtom.hpp"
 #endif
 
 #include <string>
@@ -47,46 +47,46 @@ namespace configmaps {
 
 
     ConfigAtom(int val) : luValue(0), iValue(val),
-                                   uValue(0), dValue(0.0),
-                                   parsed(true), type(INT_TYPE) {}
+                          uValue(0), dValue(0.0),
+                          parsed(true), type(INT_TYPE) {}
 
     ConfigAtom(bool val) : luValue(0), iValue(val),
-                                    uValue(0), dValue(0.0),
-                                    parsed(true), type(BOOL_TYPE) {}
+                           uValue(0), dValue(0.0),
+                           parsed(true), type(BOOL_TYPE) {}
 
     ConfigAtom(unsigned int val) : luValue(0), iValue(0),
-                                            uValue(val), dValue(0.0),
-                                            parsed(true), type(UINT_TYPE) {}
+                                   uValue(val), dValue(0.0),
+                                   parsed(true), type(UINT_TYPE) {}
 
     ConfigAtom(double val) : luValue(0), iValue(0),
-                                      uValue(0), dValue(val),
-                                      parsed(true), type(DOUBLE_TYPE) {}
+                             uValue(0), dValue(val),
+                             parsed(true), type(DOUBLE_TYPE) {}
 
     ConfigAtom(unsigned long val) : luValue(val), iValue(0),
-                                             uValue(0), dValue(0.0),
-                                             parsed(true), type(ULONG_TYPE) {}
+                                    uValue(0), dValue(0.0),
+                                    parsed(true), type(ULONG_TYPE) {}
 
     ConfigAtom(std::string val) : luValue(0), iValue(0),
-                                           uValue(0), dValue(0.0),
-                                           sValue(val.c_str()), parsed(false),
-                                           type(UNDEFINED_TYPE) {}
+                                  uValue(0), dValue(0.0),
+                                  sValue(val.c_str()), parsed(false),
+                                  type(UNDEFINED_TYPE) {}
 
     ConfigAtom(const char *val) : luValue(0), iValue(0),
-                                           uValue(0), dValue(0.0),
-                                           sValue(val), parsed(false),
-                                           type(UNDEFINED_TYPE) {}
+                                  uValue(0), dValue(0.0),
+                                  sValue(val), parsed(false),
+                                  type(UNDEFINED_TYPE) {}
     /**
      * @brief Fills ConfigAtom item from YAML::Node.
      * @param n The node containing the informations for the object.
      * @throw Throws std::runtime_error if the type of the node is not scalar.
      */
     ConfigAtom(const YAML::Node &n) {
-        if(n.Type() != YAML::NodeType::Scalar) {
-            throw std::runtime_error("Failed to create ConfigAtom Item, YAML::Node was not a scalar type!");
-        }
-        setUnparsedString(n.Scalar());
+      if(n.Type() != YAML::NodeType::Scalar) {
+        throw std::runtime_error("Failed to create ConfigAtom Item, YAML::Node was not a scalar type!");
+      }
+      setUnparsedString(n.Scalar());
 #ifdef VERBOSE
-        std::cout << "Atom Item created: " << this->toString() << std::endl;
+      std::cout << "Atom Item created: " << this->toString() << std::endl;
 #endif
     }
 
@@ -301,9 +301,9 @@ namespace configmaps {
       fprintf(stderr, "dump: %s\n", s.c_str());
 #endif
       if(s.empty())
-          emitter << " ";
+        emitter << " ";
       else
-          emitter << s;
+        emitter << s;
     }
 
     virtual void dumpToJsonValue(Json::Value &root) const {
@@ -312,9 +312,9 @@ namespace configmaps {
       fprintf(stderr, "dump: %s\n", s.c_str());
 #endif
       if(s.empty())
-          root = " ";
+        root = " ";
       else
-          root = s;
+        root = s;
     }
 
   private:

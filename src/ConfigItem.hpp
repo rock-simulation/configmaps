@@ -22,7 +22,7 @@
 #define CONFIG_ITEM_HPP
 
 #ifdef _PRINT_HEADER_
-  #warning "ConfigItem.hpp"
+#warning "ConfigItem.hpp"
 #endif
 
 
@@ -33,12 +33,12 @@
 
 //forwards:
 namespace YAML{
-    class Emitter;
-    class Node;
+  class Emitter;
+  class Node;
 }
 
 namespace Json{
-    class Value;
+  class Value;
 }
 
 namespace configmaps {
@@ -108,7 +108,7 @@ namespace configmaps {
      * @throw std::runtime_error, if the file could not be opened.
      */
     static ConfigItem fromYamlFile(const std::string &filename,
-                                  bool loadURI = false);
+                                   bool loadURI = false);
     /**
      * @brief Factory function, creating a ConfigItem from a YAML String.
      * @see ConfigItem fromYamlStream(std::istream &in)
@@ -259,10 +259,10 @@ namespace configmaps {
     }
 
     /*
-    template<typename T>
-    void push_back(const T &value) {
+      template<typename T>
+      void push_back(const T &value) {
       *this << (ConfigItem)ConfigAtom(value);
-    }
+      }
     */
     size_t size() const;
     ConfigAtom* getOrCreateAtom();

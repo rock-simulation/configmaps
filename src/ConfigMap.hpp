@@ -33,19 +33,19 @@
 
 //forwards:
 namespace YAML {
-    class Node;
+  class Node;
 }
 namespace Json {
-    class Value;
+  class Value;
 }
 
 namespace configmaps {
 
-// only functions used from misc.h
-std::string trim(const std::string& str);
+  // only functions used from misc.h
+  std::string trim(const std::string& str);
 
-class ConfigMap: public ConfigBase, public FIFOMap<std::string, ConfigItem> {
-public:
+  class ConfigMap: public ConfigBase, public FIFOMap<std::string, ConfigItem> {
+  public:
     /**
      * @brief Create and fill the object with values from YAML node.
      * @param n The node containing the data.
@@ -58,25 +58,25 @@ public:
      */
     ConfigMap(const Json::Value &v);
 
-    ConfigMap(){};
+    ConfigMap() {};
 
     ConfigItem& operator[](const std::string &name){
-        ConfigItem &w = FIFOMap<std::string, ConfigItem>::operator[](name);
+      ConfigItem &w = FIFOMap<std::string, ConfigItem>::operator[](name);
 
-        if(find(name) == end()){
-            w.setParentName(name);
-        }
+      if(find(name) == end()){
+        w.setParentName(name);
+      }
 
-        return w;
+      return w;
     }
 
-    ConfigItem& operator[](const char *name){
-        ConfigItem &w = FIFOMap<std::string, ConfigItem>::operator[](name);
-        if(find(name) == end()){
-            w.setParentName(name);
-        }
+    ConfigItem& operator[](const char *name) {
+      ConfigItem &w = FIFOMap<std::string, ConfigItem>::operator[](name);
+      if(find(name) == end()){
+        w.setParentName(name);
+      }
 
-        return w;
+      return w;
     }
 
     bool hasKey(std::string key);
@@ -101,24 +101,24 @@ public:
     virtual void dumpToJsonValue(Json::Value &root) const;
 
     // checks if the key is in the list, if not return the given default value
-    template<typename T> T get(const std::string &key, const T &defaultValue){
-        if(find(key) != end()){
-            return (T) (*this)[key];
-        }
-        return defaultValue;
+    template<typename T> T get(const std::string &key, const T &defaultValue) {
+      if(find(key) != end()){
+        return (T) (*this)[key];
+      }
+      return defaultValue;
     }
 
     // checks if the key is in the list, if not add the given default value
     // and return it
-    template<typename T> T getOrCreate(const std::string &key, const T &defaultValue){
-        if(find(key) != end()){
-            return (T) (*this)[key];
-        }
-        (*this)[key] = defaultValue;
-        return defaultValue;
+    template<typename T> T getOrCreate(const std::string &key, const T &defaultValue) {
+      if(find(key) != end()){
+        return (T) (*this)[key];
+      }
+      (*this)[key] = defaultValue;
+      return defaultValue;
     }
 
-};
+  };
 } // end of namespace configmaps
 
 #endif // CONFIG_MAP_H
