@@ -12,6 +12,7 @@ rock_find_cmake(Boost)
 
 pkg_check_modules(YAML REQUIRED
         yaml-cpp
+        jsoncpp
 )
 include_directories(${YAML_INCLUDE_DIRS})
 link_directories(${YAML_LIBRARY_DIRS})

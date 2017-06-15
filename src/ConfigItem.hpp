@@ -31,11 +31,14 @@
 #include "FIFOMap.h"
 #include "ConfigBase.hpp"
 
-
 //forwards:
 namespace YAML{
     class Emitter;
     class Node;
+}
+
+namespace Json{
+    class Value;
 }
 
 namespace configmaps {
@@ -67,7 +70,7 @@ namespace configmaps {
 
     class BadIndexException: public std::exception {
       virtual const char* what() const throw() {
-        return "Item is of wrong type.";
+        return "Bad index exception.";
       }
     } badIndexExp;
 
@@ -152,6 +155,24 @@ namespace configmaps {
      * @return The resulting YAML string.
      */
     std::string toYamlString() const;
+
+    /**
+     * @brief Calls the emitter function of its base object (if any).
+     * @param emitter The emitter to output the stream.
+     */
+    void dumpToJsonValue(Json::Value &root) const;
+
+    /**
+     * @brief Writes YAML representation of the object to given output stream.
+     * @param out Stream to write on.
+     */
+    void toJsonStream(std::ostream &out) const;
+
+    /**
+     * Writes a JSON serialization of the object into a string.
+     * @return The resulting JSON string.
+     */
+    std::string toJsonString() const;
 
     bool isAtom() const;
     bool isMap() const;

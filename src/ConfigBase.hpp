@@ -3,8 +3,12 @@
 #include <string>
 #include <ostream>
 
-namespace YAML{
-    class Emitter;
+namespace YAML {
+  class Emitter;
+}
+
+namespace Json {
+  class Value;
 }
 
 namespace configmaps {
@@ -28,6 +32,11 @@ namespace configmaps {
     void toYamlStream(std::ostream &out) const;
     void toYamlFile(const std::string &filename) const;
     std::string toYamlString() const;
+
+    virtual void dumpToJsonValue(Json::Value &root) const = 0;
+
+    void toJsonStream(std::ostream &out) const;
+    std::string toYamlJson() const;
 
     protected:
       std::string parentName;

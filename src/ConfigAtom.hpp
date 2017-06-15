@@ -30,13 +30,9 @@
 #include <cstdio>
 #ifndef Q_MOC_RUN
 #include <yaml-cpp/yaml.h>
+#include <json/json.h>
 #endif
 #include "ConfigBase.hpp"
-
-//forwards:
-namespace YAML{
-    class Node;
-}
 
 
 namespace configmaps {
@@ -304,6 +300,17 @@ namespace configmaps {
           emitter << " ";
       else
           emitter << s;
+    }
+
+    virtual void dumpToJsonValue(Json::Value &root) const {
+      std::string s = toString();
+#ifdef VERBOSE
+      fprintf(stderr, "dump: %s\n", s.c_str());
+#endif
+      if(s.empty())
+          root << " ";
+      else
+          root << s;
     }
 
   private:

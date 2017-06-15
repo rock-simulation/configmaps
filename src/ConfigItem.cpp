@@ -181,6 +181,7 @@ namespace configmaps {
     if(v) {
       return v->end();
     }
+    fprintf(stderr, "(endMap) parent: %s\n", parentName.c_str());
     throw wrongTypeExp;
   }
 
@@ -193,6 +194,7 @@ namespace configmaps {
     if(v) {
       return v->find(key);
     }
+    fprintf(stderr, "(map::find) parent: %s\n", parentName.c_str());
     throw wrongTypeExp;
   }
 
@@ -210,12 +212,13 @@ namespace configmaps {
       v->erase(it);
       return;
     }
+    fprintf(stderr, "(map::erase) parent: %s\n", parentName.c_str());
     throw wrongTypeExp;
   }
 
   void ConfigItem::dumpToYamlEmitter(YAML::Emitter &emitter) const{
       if(!item){
-          throw std::runtime_error("Item not set while toYamlStream was requested!");
+        throw std::runtime_error("Item not set while toYamlStream was requested!");
       }
       item->dumpToYamlEmitter(emitter);
   }
@@ -227,6 +230,19 @@ namespace configmaps {
       fprintf(stderr, "ERROR: ConfigMap::toYamlStream failed!\n");
       return;
     }
+    out << emitter.c_str() << std::endl;
+  }
+
+  void ConfigItem::dumpToJsonValue(Json::Value &root) const{
+      if(!item){
+        throw std::runtime_error("Item not set while toYamlStream was requested!");
+      }
+      item->dumpToJsonValue(root);
+  }
+
+  void ConfigItem::toJsonStream(std::ostream &out) const {
+    Json::Value root;
+    dumpToJsonValue(root);
     out << emitter.c_str() << std::endl;
   }
 
@@ -244,6 +260,12 @@ namespace configmaps {
   std::string ConfigItem::toYamlString() const {
     std::ostringstream sout;
     toYamlStream(sout);
+    return sout.str();
+  }
+
+  std::string ConfigItem::toJsonString() const {
+    std::ostringstream sout;
+    toJsonStream(sout);
     return sout.str();
   }
 
@@ -278,6 +300,7 @@ namespace configmaps {
     }
     ConfigMap *m = dynamic_cast<ConfigMap*>(item);
     if(m) return *m;
+    fprintf(stderr, "(map&) parent: %s\n", parentName.c_str());
     throw wrongTypeExp;
   }
 
@@ -288,6 +311,7 @@ namespace configmaps {
     }
     ConfigMap *m = dynamic_cast<ConfigMap*>(item);
     if(m) return m;
+    fprintf(stderr, "(map*) parent: %s\n", parentName.c_str());
     throw wrongTypeExp;
   }
 
@@ -383,6 +407,7 @@ namespace configmaps {
     if(v) {
       return (*v)[0][s];
     }
+    fprintf(stderr, "([s]) parent: %s\n", parentName.c_str());
     throw wrongTypeExp;
   }
 
@@ -406,6 +431,7 @@ namespace configmaps {
     if(s==0) {
       return *this;
     }
+    fprintf(stderr, "([ul]) parent: %s\n", parentName.c_str());
     throw wrongTypeExp;
   }
 
@@ -437,6 +463,7 @@ namespace configmaps {
       ConfigAtom *m = dynamic_cast<ConfigAtom*>(item);
       if(m) return m->toString();
     }
+    fprintf(stderr, "([atom::toString]) parent: %s\n", parentName.c_str());
     throw wrongTypeExp;
   }
 
@@ -464,6 +491,7 @@ namespace configmaps {
     if(atom) return atom;
     ConfigVector *v = dynamic_cast<ConfigVector*>(item);
     if(v) return (*v)[0].getOrCreateAtom();
+    fprintf(stderr, "([atom::getOrCreateAtom]) parent: %s\n", parentName.c_str());
     throw wrongTypeExp;
   }
 
