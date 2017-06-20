@@ -33,9 +33,9 @@ namespace configmaps {
 
     for(Json::Value::const_iterator it = v.begin(); it != v.end(); ++it){
 
-      std::string key = it.name();
+      std::string key = it.key().asString();
 
-      if(it->isNull())
+      if((*it).isNull())
         continue;
       //if not null:
       (*this).emplace(key, ConfigItem(*it));
