@@ -122,7 +122,7 @@ namespace configmaps {
     while(isspace(str[back_idx]) && back_idx > 0)
       back_idx--;
 
-    if(front_idx >= back_idx)
+    if(front_idx > back_idx)
       return "";
     else
       return str.substr(front_idx, back_idx - front_idx + 1);
