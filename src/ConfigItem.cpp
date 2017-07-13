@@ -406,6 +406,14 @@ namespace configmaps {
     return *this;
   }
 
+  bool ConfigItem::operator==(const std::string& s) {
+    return (getOrCreateAtom()->getString() == s);
+  }
+
+  bool ConfigItem::operator!=(const std::string& s) {
+    return (getOrCreateAtom()->getString() != s);
+  }
+
   ConfigItem& ConfigItem::operator=(const char *v) {
     getOrCreateAtom()->setUnparsedString(v);
     return *this;

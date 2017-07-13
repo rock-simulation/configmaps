@@ -209,6 +209,9 @@ namespace configmaps {
     // deprecated atom function
     std::string getString();
 
+    bool operator==(const std::string& s);
+    bool operator!=(const std::string& s);
+
     template<typename T>
     ConfigItem& operator>>(T &s) {
       s = (T)*this;
