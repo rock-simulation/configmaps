@@ -228,6 +228,20 @@ namespace configmaps {
     return (find(key) != endMap());
   }
 
+  void ConfigItem::appendMap(const ConfigMap &value) {
+    if(!item) {
+      item = new ConfigMap();
+      item->setParentName(parentName);
+    }
+    ConfigMap *v = dynamic_cast<ConfigMap*>(item);
+    if(v) {
+      v->append(value);
+      return;
+    }
+    fprintf(stderr, "(map::appendMap) parent: %s\n", parentName.c_str());
+    throw wrongTypeExp;
+  }
+
   void ConfigItem::erase(FIFOMap<std::string, ConfigItem>::iterator &it) {
     if(!item) {
       item = new ConfigMap();

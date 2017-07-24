@@ -226,6 +226,7 @@ namespace configmaps {
     FIFOMap<std::string, ConfigItem>::iterator find(std::string key);
     bool hasKey(std::string key);
     void erase(FIFOMap<std::string, ConfigItem>::iterator &it);
+    void appendMap(const ConfigMap &item);
 
     // vector access
     ConfigItem& operator[](unsigned long v);
