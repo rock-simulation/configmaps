@@ -195,7 +195,7 @@ namespace configmaps {
 
     template<typename Key, typename T>
     size_t FIFOMap<Key, T>::erase(const Key &x) {
-      std::cerr << "FIFOMap::erase is untested" << std::endl;
+      //std::cerr << "FIFOMap::erase is untested" << std::endl;
       size_t ret = std::map<Key, T>::erase(x);
       if(ret) {
         for(iterator it = begin(); it != end(); ++it) {
