@@ -4,6 +4,6 @@
     </description>
     <depend package="base/cmake" />
     <depend package="yaml-cpp" />
-    <depend package="jsoncpp" />
+    <depend package="json-cpp" />
     <tags>needs_opt</tags>
 </package>
