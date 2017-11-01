@@ -14,6 +14,9 @@ include_directories(${YAML_INCLUDE_DIRS})
 link_directories(${YAML_LIBRARY_DIRS})
 add_definitions(${YAML_CFLAGS_OTHER})  #flags excluding the ones with -I
 
+pkg_check_modules(Boost REQUIRED)
+include_directories(${Boost_INCLUDE_DIR})
+
 SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 set(SOURCES 
