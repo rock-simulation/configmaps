@@ -502,10 +502,6 @@ namespace configmaps {
     return getOrCreateAtom()->getString();
   }
 
-  const char* ConfigItem::c_str() {
-    return getString().c_str();
-  }
-
   std::string ConfigItem::toString() const {
     if(item) {
       ConfigAtom *m = dynamic_cast<ConfigAtom*>(item);

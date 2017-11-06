@@ -204,7 +204,11 @@ namespace configmaps {
     ConfigItem& operator=(const std::string &v);
     ConfigItem& operator=(const char* v);
     ConfigItem& operator=(const bool);
-    const char* c_str();
+
+    inline const char* c_str() {
+      return getString().c_str();
+    }
+
     std::string toString() const;
     // deprecated atom function
     std::string getString();
