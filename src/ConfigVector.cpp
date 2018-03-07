@@ -2,6 +2,7 @@
 #include <yaml-cpp/yaml.h>
 #include <json/json.h>
 #include <iostream>
+#include <cassert>
 
 using namespace configmaps;
 
