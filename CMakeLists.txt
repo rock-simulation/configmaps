@@ -10,6 +10,8 @@ pkg_check_modules(YAML REQUIRED
         yaml-cpp
         jsoncpp
 )
+
+find_package(jsoncpp REQUIRED)
 include_directories(${YAML_INCLUDE_DIRS})
 link_directories(${YAML_LIBRARY_DIRS})
 add_definitions(${YAML_CFLAGS_OTHER})  #flags excluding the ones with -I
