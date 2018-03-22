@@ -233,7 +233,7 @@ namespace configmaps {
     void appendMap(const ConfigMap &item);
 
     // vector access
-    ConfigItem& operator[](unsigned long v);
+    ConfigItem& operator[](size_t v);
     ConfigItem& operator[](int v);
     std::vector<ConfigItem>::iterator begin();
     std::vector<ConfigItem>::iterator end();

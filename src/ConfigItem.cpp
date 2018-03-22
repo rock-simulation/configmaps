@@ -461,10 +461,10 @@ namespace configmaps {
 
   ConfigItem& ConfigItem::operator[](int s) {
     if(s < 0) throw badIndexExp;
-    return (*this)[(unsigned long)s];
+    return (*this)[(size_t)s];
   }
 
-  ConfigItem& ConfigItem::operator[](unsigned long s) {
+  ConfigItem& ConfigItem::operator[](size_t s) {
     ConfigVector *v = getOrCreateVector();
     if(v) {
       if(v->size() > s) {
