@@ -132,4 +132,16 @@ namespace configmaps {
     return (find(key) != end());
   }
 
+  void ConfigMap::updateMap(ConfigMap &update) {
+    for(auto it: update) {
+      if(!hasKey(it.first)) {
+        operator[](it.first) = it.second;
+        continue;
+      }
+      if(operator[](it.first).isMap() and it.second.isMap()) {
+        operator[](it.first).updateMap(it.second);
+      }
+    }
+  }
+
 } // end of namespace configmaps

@@ -242,6 +242,21 @@ namespace configmaps {
     throw wrongTypeExp;
   }
 
+  void ConfigItem::updateMap(const ConfigMap &update) {
+    if(!item) {
+      item = new ConfigMap();
+      item->setParentName(parentName);
+    }
+    ConfigMap *v = dynamic_cast<ConfigMap*>(item);
+    if(v) {
+      ConfigMap map = update;
+      v->updateMap(map);
+      return;
+    }
+    fprintf(stderr, "(map::updateMap) parent: %s\n", parentName.c_str());
+    throw wrongTypeExp;
+  }
+
   void ConfigItem::erase(FIFOMap<std::string, ConfigItem>::iterator &it) {
     if(!item) {
       item = new ConfigMap();
