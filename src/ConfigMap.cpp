@@ -141,6 +141,9 @@ namespace configmaps {
       if(operator[](it.first).isMap() and it.second.isMap()) {
         operator[](it.first).updateMap(it.second);
       }
+      else {
+        operator[](it.first) = it.second;
+      }
     }
   }
 
