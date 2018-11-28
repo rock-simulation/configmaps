@@ -3,6 +3,7 @@
 #include <yaml-cpp/yaml.h>
 #include <fstream>
 #include <sstream>
+#include <cstdio>
 
 #include "ConfigAtom.hpp"
 #include "ConfigVector.hpp"
@@ -14,14 +15,29 @@ namespace configmaps {
   using std::string;
   using std::endl;
 
+  int ConfigBase::debugLevel = 0;
+
   /************************
    * Implementation
    ************************/
+  ConfigMap::ConfigMap() {
+    if(ConfigBase::debugLevel == 0) {
+      char *envText = getenv("DEBUG_LEVEL");
+      if(envText) {
+        sscanf(envText, "%d", &ConfigMap::debugLevel);
+      }
+      else {
+        ConfigBase::debugLevel = -1;
+      }
+    }
+  }
 
-  ConfigMap::ConfigMap(const YAML::Node &n) {
+  ConfigMap::ConfigMap(const YAML::Node &n) : ConfigMap() {
     for(YAML::const_iterator it = n.begin(); it != n.end(); ++it){
       std::string key = it->first.as<std::string>();
-
+      if(ConfigBase::debugLevel >= 1) {
+        fprintf(stderr, "\n%s:", key.c_str());
+      }
       if(it->second.IsNull())
         continue;
       //if not null:
@@ -29,11 +45,14 @@ namespace configmaps {
     }
   }
 
-  ConfigMap::ConfigMap(const Json::Value &v) {
-
+  ConfigMap::ConfigMap(const Json::Value &v) : ConfigMap() {
     for(Json::Value::const_iterator it = v.begin(); it != v.end(); ++it){
 
       std::string key = it.key().asString();
+
+      if(ConfigBase::debugLevel >= 1) {
+        fprintf(stderr, "\n%s:", key.c_str());
+      }
 
       if((*it).isNull())
         continue;
@@ -52,6 +71,9 @@ namespace configmaps {
   }
 
   ConfigMap ConfigMap::fromYamlFile(const string &filename, bool loadURI) {
+    if(ConfigBase::debugLevel >= 1) {
+      fprintf(stderr, "----- %s\n", filename.c_str());
+    }
 
     ConfigItem item = ConfigItem::fromYamlFile(filename, loadURI);
     if(!item.isMap()){
@@ -89,9 +111,9 @@ namespace configmaps {
         fprintf(stderr, "problem with ConfigMap for: %s\n", it->first.c_str());
       }
       emitter << YAML::Value;
-#ifdef VERBOSE
-      fprintf(stderr, "dump map: %s\n", it->first.c_str());
-#endif
+      if(ConfigBase::debugLevel >= 1) {
+        fprintf(stderr, "dump map: %s\n", it->first.c_str());
+      }
       it->second.dumpToYamlEmitter(emitter);
     }
     emitter << YAML::EndMap;

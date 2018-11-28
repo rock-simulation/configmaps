@@ -58,7 +58,7 @@ namespace configmaps {
      */
     ConfigMap(const Json::Value &v);
 
-    ConfigMap() {};
+    ConfigMap();
 
     ConfigItem& operator[](const std::string &name){
       ConfigItem &w = FIFOMap<std::string, ConfigItem>::operator[](name);

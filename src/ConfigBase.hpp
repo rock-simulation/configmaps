@@ -38,7 +38,9 @@ namespace configmaps {
     void toJsonStream(std::ostream &out) const;
     std::string toJsonString() const;
 
-    protected:
+    static int debugLevel;
+
+  protected:
       std::string parentName;
 
   }; // end of class ConfigBase

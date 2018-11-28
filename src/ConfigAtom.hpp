@@ -85,9 +85,9 @@ namespace configmaps {
         throw std::runtime_error("Failed to create ConfigAtom Item, YAML::Node was not a scalar type!");
       }
       setUnparsedString(n.Scalar());
-#ifdef VERBOSE
-      std::cout << "Atom Item created: " << this->toString() << std::endl;
-#endif
+      if(ConfigMap::debugLevel >= 1) {
+        fprintf(stderr, " %s", this->toString().c_str());
+      }
     }
 
     ConfigAtom(const Json::Value &v) {
@@ -297,9 +297,9 @@ namespace configmaps {
 
     virtual void dumpToYamlEmitter(YAML::Emitter &emitter) const {
       std::string s = toString();
-#ifdef VERBOSE
-      fprintf(stderr, "dump: %s\n", s.c_str());
-#endif
+      if(ConfigBase::debugLevel >= 1) {
+        fprintf(stderr, "dump: %s\n", s.c_str());
+      }
       if(s.empty())
         emitter << " ";
       else
@@ -308,9 +308,9 @@ namespace configmaps {
 
     virtual void dumpToJsonValue(Json::Value &root) const {
       std::string s = toString();
-#ifdef VERBOSE
-      fprintf(stderr, "dump: %s\n", s.c_str());
-#endif
+      if(ConfigBase::debugLevel >= 1) {
+        fprintf(stderr, "dump: %s\n", s.c_str());
+      }
       if(s.empty())
         root = " ";
       else

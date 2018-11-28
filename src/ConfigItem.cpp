@@ -26,15 +26,13 @@
 #include <fstream>
 #include <exception>
 
-//#define VERBOSE
-
 namespace configmaps {
 
   ConfigItem::ConfigItem() {
     item = NULL;
-#ifdef VERBOSE
-    fprintf(stderr, "new d %lx %lx\n", (unsigned long)this->item, (unsigned long)this);
-#endif
+    if(ConfigBase::debugLevel >= 2) {
+      fprintf(stderr, "new d %lx %lx\n", (unsigned long)this->item, (unsigned long)this);
+    }
   }
 
   ConfigItem::ConfigItem(const YAML::Node &n) {
@@ -73,17 +71,17 @@ namespace configmaps {
     if(item.item) {
       *this = *item.item;
     }
-#ifdef VERBOSE
-    fprintf(stderr, "new d %lx %lx\n", (unsigned long)this->item, (unsigned long)this);
-#endif
+    if(ConfigBase::debugLevel >= 2) {
+      fprintf(stderr, "new d %lx %lx\n", (unsigned long)this->item, (unsigned long)this);
+    }
   }
 
   ConfigItem::ConfigItem(const ConfigBase &item) {
     this->item = NULL;
     *this = item;
-#ifdef VERBOSE
-    fprintf(stderr, "new d %lx %lx\n", (unsigned long)this->item, (unsigned long)this);
-#endif
+    if(ConfigBase::debugLevel >= 2) {
+      fprintf(stderr, "new d %lx %lx\n", (unsigned long)this->item, (unsigned long)this);
+    }
   }
 
   ConfigItem& ConfigItem::operator=(const ConfigItem& item) {
@@ -101,15 +99,15 @@ namespace configmaps {
 
   ConfigItem& ConfigItem::operator=(const ConfigBase& item) {
     if(this->item) {
-#ifdef VERBOSE
-      fprintf(stderr, "delete %lx\n", (unsigned long)this->item);
-#endif
+      if(ConfigBase::debugLevel >= 2) {
+        fprintf(stderr, "delete %lx\n", (unsigned long)this->item);
+      }
       delete this->item;
       this->item = NULL;
     }
-#ifdef VERBOSE
-    fprintf(stderr, "new = old %lx\n", (unsigned long)this->item);
-#endif
+    if(ConfigBase::debugLevel >= 2) {
+      fprintf(stderr, "new = old %lx\n", (unsigned long)this->item);
+    }
     const ConfigAtom* a = dynamic_cast<const ConfigAtom*>(&item);
     if(a) {
       this->item = new ConfigAtom(*a);
@@ -129,16 +127,16 @@ namespace configmaps {
         }
       }
     }
-#ifdef VERBOSE
-    fprintf(stderr, "new = %lx  %lx\n", (unsigned long)this->item, (unsigned long)this);
-#endif
+    if(ConfigBase::debugLevel >= 2) {
+      fprintf(stderr, "new = %lx  %lx\n", (unsigned long)this->item, (unsigned long)this);
+    }
     return *this;
   }
 
   ConfigItem::~ConfigItem() {
-#ifdef VERBOSE
-    fprintf(stderr, "delete %lx\n", (unsigned long)item);
-#endif
+    if(ConfigBase::debugLevel >= 2) {
+      fprintf(stderr, "delete %lx\n", (unsigned long)item);
+    }
     delete item;
   }
 
