@@ -124,6 +124,8 @@ namespace configmaps {
     operator ConfigBase& () {return *item;}
     operator ConfigMap& ();
     operator ConfigMap* ();
+    operator ConfigMap& () const;
+    operator ConfigMap* () const;
     operator ConfigVector& ();
     operator ConfigVector* ();
     operator ConfigAtom& ();

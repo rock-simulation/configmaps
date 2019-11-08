@@ -357,10 +357,32 @@ namespace configmaps {
     throw wrongTypeExp;
   }
 
+  ConfigItem::operator ConfigMap& () const {
+    if(!item) {
+      fprintf(stderr, "(map&) parent: %s\n", parentName.c_str());
+      throw wrongTypeExp;
+    }
+    ConfigMap *m = dynamic_cast<ConfigMap*>(item);
+    if(m) return *m;
+    fprintf(stderr, "(map&) parent: %s\n", parentName.c_str());
+    throw wrongTypeExp;
+  }
+
   ConfigItem::operator ConfigMap* () {
     if(!item) {
       item = new ConfigMap();
       item->setParentName(parentName);
+    }
+    ConfigMap *m = dynamic_cast<ConfigMap*>(item);
+    if(m) return m;
+    fprintf(stderr, "(map*) parent: %s\n", parentName.c_str());
+    throw wrongTypeExp;
+  }
+
+  ConfigItem::operator ConfigMap* () const {
+    if(!item) {
+      fprintf(stderr, "(map&) parent: %s\n", parentName.c_str());
+      throw wrongTypeExp;
     }
     ConfigMap *m = dynamic_cast<ConfigMap*>(item);
     if(m) return m;
