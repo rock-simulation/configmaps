@@ -30,7 +30,13 @@
 #include <cstdio>
 #ifndef Q_MOC_RUN
 #include <yaml-cpp/yaml.h>
+
+#ifdef LINUX
+#include <jsoncpp/json/json.h>
+#else
 #include <json/json.h>
+#endif
+
 #endif
 #include "ConfigBase.hpp"
 
