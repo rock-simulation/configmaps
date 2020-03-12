@@ -31,9 +31,11 @@
 #ifndef Q_MOC_RUN
 #include <yaml-cpp/yaml.h>
 
-#ifdef LINUX
+#include "config.h"
+
+#ifdef HAVE_JSONCPP_JSON_H
 #include <jsoncpp/json/json.h>
-#else
+#elif HAVE_JSON_H
 #include <json/json.h>
 #endif
 

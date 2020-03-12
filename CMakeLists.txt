@@ -16,7 +16,19 @@ add_definitions(${YAML_CFLAGS_OTHER})  #flags excluding the ones with -I
 
 SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
-set(SOURCES 
+add_definitions(-DCOMPILE_UNIT_TESTS)
+
+# check the path to json header
+include(CheckIncludeFileCXX)
+check_include_file_cxx(jsoncpp/json/json.h HAVE_JSONCPP_JSON_H)
+if (NOT HAVE_JSONCPP_JSON_H)
+  check_include_file_cxx (json/json.h HAVE_JSON_H)
+endif(NOT HAVE_JSONCPP_JSON_H)
+
+# cmake variables
+configure_file(${CMAKE_SOURCE_DIR}/config.h.in ${CMAKE_BINARY_DIR}/config.h @ONLY)
+
+set(SOURCES
     src/ConfigMap.cpp
     src/ConfigItem.cpp
     src/ConfigVector.cpp
@@ -59,8 +71,10 @@ install(TARGETS ${PROJECT_NAME} ${_INSTALL_DESTINATIONS})
 
 # Install headers into mars include directory
 install(FILES ${HEADERS} DESTINATION include/configmaps)
+install(FILES ${CMAKE_BINARY_DIR}/config.h DESTINATION include/${PROJECT_NAME})
+target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_BINARY_DIR}")
 
-# Prepare and install necessary files to support finding of the library 
+# Prepare and install necessary files to support finding of the library
 # using pkg-config
 configure_file(${PROJECT_NAME}.pc.in ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.pc @ONLY)
 install(FILES ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.pc DESTINATION lib/pkgconfig)

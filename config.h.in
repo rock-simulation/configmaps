@@ -1,0 +1,11 @@
+/*
+ * This file is used to export cmake variables into c/c++.
+ */
+
+#ifndef CONFIGMAPS_CONFIG_H
+#define CONFIGMAPS_CONFIG_H
+
+#cmakedefine HAVE_JSONCPP_JSON_H
+#cmakedefine HAVE_JSON_H
+
+#endif
