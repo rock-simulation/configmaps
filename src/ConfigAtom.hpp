@@ -300,10 +300,7 @@ namespace configmaps {
       if(ConfigBase::debugLevel >= 1) {
         fprintf(stderr, "dump: %s\n", s.c_str());
       }
-      if(s.empty())
-        emitter << " ";
-      else
-        emitter << s;
+      emitter << s;
     }
 
     virtual void dumpToJsonValue(Json::Value &root) const {
@@ -311,10 +308,7 @@ namespace configmaps {
       if(ConfigBase::debugLevel >= 1) {
         fprintf(stderr, "dump: %s\n", s.c_str());
       }
-      if(s.empty())
-        root = " ";
-      else
-        root = s;
+      root = s;
     }
 
   private:
