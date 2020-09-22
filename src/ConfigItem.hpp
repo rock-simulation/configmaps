@@ -208,7 +208,8 @@ namespace configmaps {
     ConfigItem& operator=(const bool);
 
     inline const char* c_str() {
-      return getString().c_str();
+      cStrTmp = getString();
+      return cStrTmp.c_str();
     }
 
     std::string toString() const;
@@ -282,6 +283,7 @@ namespace configmaps {
   private:
     ConfigBase *item;
     std::string parentName;
+    std::string cStrTmp;
 
     static void recursiveLoad(ConfigItem &item, std::string &path);
     static std::string getPathOfFile(const std::string &filename);
