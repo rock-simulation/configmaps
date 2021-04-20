@@ -26,7 +26,7 @@
 #include <fstream>
 #include <exception>
 
-#ifdef WIN32
+#ifdef _WIN32
 #define POINTER void*
 #else
 #define POINTER unsigned long
