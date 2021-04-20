@@ -26,12 +26,18 @@
 #include <fstream>
 #include <exception>
 
+#ifdef WIN32
+#define POINTER void*
+#else
+#define POINTER unsigned long
+#endif
+
 namespace configmaps {
 
   ConfigItem::ConfigItem() {
     item = NULL;
     if(ConfigBase::debugLevel >= 2) {
-      fprintf(stderr, "new d %lx %lx\n", (unsigned long)this->item, (unsigned long)this);
+      fprintf(stderr, "new d %lx %lx\n", (POINTER)this->item, (POINTER)this);
     }
   }
 
@@ -72,7 +78,7 @@ namespace configmaps {
       *this = *item.item;
     }
     if(ConfigBase::debugLevel >= 2) {
-      fprintf(stderr, "new d %lx %lx\n", (unsigned long)this->item, (unsigned long)this);
+      fprintf(stderr, "new d %lx %lx\n", (POINTER)this->item, (POINTER)this);
     }
   }
 
@@ -80,7 +86,7 @@ namespace configmaps {
     this->item = NULL;
     *this = item;
     if(ConfigBase::debugLevel >= 2) {
-      fprintf(stderr, "new d %lx %lx\n", (unsigned long)this->item, (unsigned long)this);
+      fprintf(stderr, "new d %lx %lx\n", (POINTER)this->item, (POINTER)this);
     }
   }
 
@@ -100,13 +106,13 @@ namespace configmaps {
   ConfigItem& ConfigItem::operator=(const ConfigBase& item) {
     if(this->item) {
       if(ConfigBase::debugLevel >= 2) {
-        fprintf(stderr, "delete %lx\n", (unsigned long)this->item);
+        fprintf(stderr, "delete %lx\n", (POINTER)this->item);
       }
       delete this->item;
       this->item = NULL;
     }
     if(ConfigBase::debugLevel >= 2) {
-      fprintf(stderr, "new = old %lx\n", (unsigned long)this->item);
+      fprintf(stderr, "new = old %lx\n", (POINTER)this->item);
     }
     const ConfigAtom* a = dynamic_cast<const ConfigAtom*>(&item);
     if(a) {
@@ -128,14 +134,14 @@ namespace configmaps {
       }
     }
     if(ConfigBase::debugLevel >= 2) {
-      fprintf(stderr, "new = %lx  %lx\n", (unsigned long)this->item, (unsigned long)this);
+      fprintf(stderr, "new = %lx  %lx\n", (POINTER)this->item, (POINTER)this);
     }
     return *this;
   }
 
   ConfigItem::~ConfigItem() {
     if(ConfigBase::debugLevel >= 2) {
-      fprintf(stderr, "delete %lx\n", (unsigned long)item);
+      fprintf(stderr, "delete %lx\n", (POINTER)item);
     }
     delete item;
   }
