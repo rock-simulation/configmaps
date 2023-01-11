@@ -1,21 +1,27 @@
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 3.5)
+project(configmaps VERSION "0.1.0" DESCRIPTION "This library contains a C++ implementation of python dictionary-like containers - ConfigMaps.")
 
-project(configmaps)
-set(PROJECT_VERSION 1.0)
-set(PROJECT_DESCRIPTION "This library contains a C++ implementation of python dictionary-like containers - ConfigMaps.")
+find_package(yaml-cpp REQUIRED)
+find_package(jsoncpp REQUIRED)
 
-include(FindPkgConfig)
-
-pkg_check_modules(YAML REQUIRED
-        yaml-cpp
-        jsoncpp
+# Export the library interface
+install(EXPORT configmaps-targets
+	NAMESPACE configmaps::
+	DESTINATION lib/cmake/configmaps
 )
-include_directories(${YAML_INCLUDE_DIRS})
-link_directories(${YAML_LIBRARY_DIRS})
-add_definitions(${YAML_CFLAGS_OTHER})  #flags excluding the ones with -I
+# Create and install the version file
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file("configmaps-config-version.cmake"
+	VERSION ${configmaps_VERSION}
+	COMPATIBILITY SameMajorVersion)
 
-SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-
+  install(
+    FILES
+    cmake/configmaps-config.cmake
+      ${PROJECT_BINARY_DIR}/configmaps-config-version.cmake
+    DESTINATION
+      lib/cmake/configmaps
+  )  
 set(SOURCES 
     src/ConfigMap.cpp
     src/ConfigItem.cpp
@@ -32,13 +38,22 @@ set(HEADERS
     src/FIFOMap.h
 )
 
-add_library(${PROJECT_NAME} SHARED ${SOURCES})
-
+add_library(configmaps SHARED ${SOURCES})
+target_compile_features(configmaps PUBLIC cxx_std_17)
 target_link_libraries(
-        ${PROJECT_NAME}
-        ${YAML_LIBRARIES}
-        -lpthread
+        configmaps
+        ${YAML_CPP_LIBRARIES}
+        jsoncpp_lib
+        pthread
+        
 )
+
+target_include_directories(configmaps
+	PUBLIC
+		$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src>
+		$<INSTALL_INTERFACE:include>
+)
+
 
 if(WIN32)
   set(LIB_INSTALL_DIR bin) # .dll are in PATH, like executables
@@ -46,25 +61,23 @@ else(WIN32)
   set(LIB_INSTALL_DIR lib)
 endif(WIN32)
 
-
-set(_INSTALL_DESTINATIONS
-	RUNTIME DESTINATION bin
-	LIBRARY DESTINATION ${LIB_INSTALL_DIR}
-	ARCHIVE DESTINATION lib
+# Install the binaries
+install(TARGETS configmaps EXPORT configmaps-targets
+  RUNTIME DESTINATION bin
+  LIBRARY DESTINATION ${LIB_INSTALL_DIR}
+  ARCHIVE DESTINATION lib
 )
 
-
 # Install the library into the lib folder
-install(TARGETS ${PROJECT_NAME} ${_INSTALL_DESTINATIONS})
+install(TARGETS configmaps ${_INSTALL_DESTINATIONS})
 
 # Install headers into mars include directory
 install(FILES ${HEADERS} DESTINATION include/configmaps)
 
 # Prepare and install necessary files to support finding of the library 
 # using pkg-config
-configure_file(${PROJECT_NAME}.pc.in ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.pc @ONLY)
-install(FILES ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.pc DESTINATION lib/pkgconfig)
+configure_file(configmaps.pc.in ${CMAKE_BINARY_DIR}/configmaps.pc @ONLY)
+install(FILES ${CMAKE_BINARY_DIR}/configmaps.pc DESTINATION lib/pkgconfig)
 
-
-
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/test)
 
