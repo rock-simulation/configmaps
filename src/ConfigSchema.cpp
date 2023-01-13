@@ -92,13 +92,7 @@ namespace configmaps
                     return false;
                 }
             }
-array:
-    type: array
-    contains:
-        type: object 
-        properties:
-            name:
-            age:
+
             
             // If the item is an array, validate its elements
             if (value["type"] == "array")
