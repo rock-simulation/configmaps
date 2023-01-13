@@ -23,18 +23,20 @@ write_basic_package_version_file("configmaps-config-version.cmake"
       lib/cmake/configmaps
   )  
 set(SOURCES 
-    src/ConfigMap.cpp
-    src/ConfigItem.cpp
-    src/ConfigVector.cpp
     src/ConfigBase.cpp
+    src/ConfigItem.cpp
+    src/ConfigMap.cpp
+    src/ConfigSchema.cpp
+    src/ConfigVector.cpp
 )
 set(HEADERS
-    src/ConfigData.h
-    src/ConfigMap.hpp
-    src/ConfigVector.hpp
-    src/ConfigItem.hpp
     src/ConfigAtom.hpp
     src/ConfigBase.hpp
+    src/ConfigData.h
+    src/ConfigItem.hpp
+    src/ConfigMap.hpp
+    src/ConfigSchema.hpp
+    src/ConfigVector.hpp
     src/FIFOMap.h
 )
 
