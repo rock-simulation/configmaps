@@ -49,10 +49,10 @@ namespace configmaps
 
         bool is_known_type(const std::string &type);
 
-        bool validate_keys(ConfigMap &config);
+        bool validate_keys(ConfigMap &config, ConfigMap& schema);
         bool has_extra_keys(ConfigMap &config, ConfigMap& schema);
 
-        bool validate_types(ConfigMap &config);
+        bool validate_types(ConfigMap &config, ConfigMap& schema);
 
         bool validate_constraints(ConfigMap& config_item, const std::string& key, ConfigMap& schema);
     };
