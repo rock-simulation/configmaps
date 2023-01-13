@@ -6,38 +6,15 @@
 #include <iostream>
 using namespace configmaps;
 
-// TEST_CASE("configmap validity test ", "schema")
-// {
-//     // Load schema
-//     ConfigMap schema = ConfigMap::fromYamlFile("schema_example.yaml");
-//     std::cout << "Schema:\n" << schema.toYamlString() << std::endl;
-
-//     ConfigMap obj;
-//     obj["name"] = "RAM";
-//     //obj["domain"] = "SOFTWARE";
-//     obj["weight"] = 0.1;
-//     obj["brand_new"] = true;
-//     obj["size"] = 8;
-//     obj["capabilities"] = ConfigVector();
-//     obj["capabilities"][0]["chip_size"] = 4;
-//     obj["capabilities"][0]["ddr4"] = true;
-//     obj["capabilities"][1]["chip_size"] = 4;
-//     obj["capabilities"][1]["ddr4"] = true;
-//     std::cout << "Object:\n"<< obj.toYamlString() << std::endl;
-
-//     REQUIRE(obj.validate(schema));
-// }
 
 TEST_CASE("ConfigSchema", "validate")
 {
-    // Load schema
-    ConfigMap schema = ConfigMap::fromYamlFile("schema_example.yaml");
+
+    ConfigMap schema = ConfigMap::fromYamlFile("schema/schema_example.yaml");
     ConfigSchema cs(schema);
-    std::cout << "Schema:\n" << schema.toYamlString() << std::endl;
 
     ConfigMap obj;
     obj["name"] = "RAM";
-    //obj["domain"] = "SOFTWARE";
     obj["weight"] = 100;
     obj["brand_new"] = true;
     obj["size"] = 8;
@@ -70,35 +47,13 @@ TEST_CASE("ConfigSchema", "validate")
     obj["objects"][1]["description"] = "test description2";
     obj["objects"][1]["is_new"] = false;
     
-
-    std::cout << "Object:\n"<< obj.toYamlString() << std::endl;
-   
-
     REQUIRE(cs.validate(obj));
-/*
-type:
-    integer: DONE
-    string: DONE
-    number: DONE
-    boolean: DONE
-    object: DONE
-    array: HALF DONE (still atomic elements not handled)
-    enum: N/A
-min:
-max:
-
-create ConfigSchema class
-which will have all functions we need
-in order to validate an object
-*/
 }
 
-
-
 TEST_CASE("ODEInertia_schema", "validate"){
-    ConfigMap schema = ConfigMap::fromYamlFile("ODEInertial_schema.yaml");
+    ConfigMap schema = ConfigMap::fromYamlFile("schema/ODEInertial_schema.yaml");
     ConfigSchema cs(schema);
-    std::cout << "Schema:\n" << schema.toYamlString() << std::endl;
+    std::cout << "Schema:\n" << schema.toYamlString() << std::endl << std::endl;
 
     ConfigMap config;
     config["mass"] = 2.0;
@@ -111,7 +66,6 @@ TEST_CASE("ODEInertia_schema", "validate"){
     config["inertia"]["i20"] = 3.14;
     config["inertia"]["i21"] = 3.14;
     config["inertia"]["i22"] = 3.14;
-    std::cout << config["inertia"]["i22"].getOrCreateAtom()->getDouble() << std::endl;
     config["design"] = ConfigMap();
     config["design"]["color"] = "red";
     config["design"]["address"] = ConfigMap();
@@ -119,7 +73,6 @@ TEST_CASE("ODEInertia_schema", "validate"){
     config["design"]["address"]["contact"] = ConfigMap();
     config["design"]["address"]["contact"]["email"] = "gu@gu.com";
     config["design"]["address"]["contact"]["phone"] = "441";
-    config["design"]["address"]["contact"]["phones"] = "441";
     config["objects"] = ConfigVector();
     config["objects"][0]["id"] = 100;
     config["objects"][0]["title"] = "test test";
@@ -129,12 +82,9 @@ TEST_CASE("ODEInertia_schema", "validate"){
     config["objects"][1]["title"] = "test tes2t";
     config["objects"][1]["description"] = "test description2";
     config["objects"][1]["is_new"] = false;
-    config["objects"][1]["mutka"] = true;
     
     std::cout << "Config:\n" << config.toYamlString() << std::endl;
 
     REQUIRE(cs.validate(config));
-
-   // REQUIRE(cs.validate(config));
 
 }
