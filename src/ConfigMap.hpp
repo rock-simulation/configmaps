@@ -92,7 +92,7 @@ namespace configmaps {
      * @brief Create YAML representation of this ConfigMap to a YAML::Emmitter.
      * @param emitter The output emitter. (parameter gets modified!).
      */
-    virtual void dumpToYamlEmitter(YAML::Emitter &emitter) const;
+    virtual void dumpToYamlEmitter(YAML::Emitter &emitter) const override;
 
     /**
      * @brief Create Json representation of this ConfigMap to a Json::Value.
