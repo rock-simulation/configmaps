@@ -77,6 +77,12 @@ install(TARGETS configmaps ${_INSTALL_DESTINATIONS})
 install(FILES ${HEADERS} DESTINATION include/configmaps)
 
 # Prepare and install necessary files to support finding of the library 
+install(
+	FILES cmake/configmaps-config.cmake
+	DESTINATION lib/cmake/configmaps
+)
+
+
 # using pkg-config
 configure_file(configmaps.pc.in ${CMAKE_BINARY_DIR}/configmaps.pc @ONLY)
 install(FILES ${CMAKE_BINARY_DIR}/configmaps.pc DESTINATION lib/pkgconfig)
