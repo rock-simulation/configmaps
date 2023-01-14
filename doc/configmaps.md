@@ -17,7 +17,7 @@ An important feature is the loading and storing of ConfigMaps in yaml files. The
 Note: While reading and writing yaml files the order of dictionaries is not necessarily kept.
 
 Yaml example file:
-
+```yaml
     list: [1, 2, a, b]
     name: foo
     value1: 1.3
@@ -25,9 +25,11 @@ Yaml example file:
     foo:
         foo2: Hello world!
         foo3: blub
+```
 
 Example program:
 
+```cpp
     #include <configmaps/ConfigData.h>
 
     int main(int argc, char *argv[]) {
@@ -73,9 +75,10 @@ Example program:
 
       return 0;
     }
+```
 
 result.yml:
-
+```yaml
     foo:
       foo2: Hello world!
       foo3: blub
@@ -90,16 +93,62 @@ result.yml:
     value3: 3.14
     blub:
       foo: 3.14
-
+```
 more syntax examples:
-
+```cpp
      double inputs[4] = {1, 2, 3, 4};
      for(int i=0; i<4; ++i) {
        for(int n=0; n<4; ++n) {
          map["unit_tests"][i]["inputs"] << inputs[n];
        }
      }
+```
 
+ConfigSchema example:
+Schema:
+```yaml
+name:
+  type: string
+weight:
+  type: number
+age:
+  type: integer
+  minimum: 18
+  maximum: 60
+verified: 
+  type: boolean
+contact:
+    type: object
+    properties:
+      phone:
+        type: string
+      email: 
+        type: string                                                                                                         
+nicknames:
+  type: array
+  contains:
+    type: string
+```
+
+Config:
+```yaml
+name: Angel
+weight: 56.33
+age: 23
+verified: true
+contact:
+  phone: "0171140123"
+  email: "angel@angel.com"
+nicknames:
+  - santa
+  - angie
+```
+
+Usage:
+```cpp
+ConfigSchema cs(schema);
+bool isValid = cs.validate(config);
+```
 
 \[26.08.2014\]
 
