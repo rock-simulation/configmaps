@@ -34,11 +34,6 @@ bool ConfigSchema::validate(ConfigMap &config)
     if (not validate_types(config, m_schema))
         return false;
 
-    // TODO:
-    //  - type: enum
-    //  - Validate constraints (minimum, maximum, maximum_elements)
-    //  - object properties
-
     return true;
 }
 
