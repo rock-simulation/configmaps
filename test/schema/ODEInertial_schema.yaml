@@ -1,0 +1,70 @@
+# Schema
+inertia:
+    type: object
+    properties:
+      i00:
+        type: number
+      i01:
+        type: number
+      i02:
+        type: number
+      i10:
+        type: number
+      i11:
+        type: number
+      i12:
+        type: number
+      i20:
+        type: number
+      i21:
+        type: number
+      i22:
+        type: number
+mass:
+    type: number
+    minimum: 0.0
+design:
+  type: object 
+  properties:
+    color: 
+      type: string
+    address:
+      type: object 
+      properties:
+        house: 
+          type: integer
+        contact:
+          type: object
+          properties:
+            email:
+              type: string
+            phone:
+              type: string
+objects:
+  type: array
+  contains:
+    type: object
+    properties:
+      title: 
+        type: string
+      description: 
+        type: string
+      is_new: 
+        type: boolean
+      id: 
+        type: integer
+
+
+# Config
+# extra: 5
+# inertia:
+#   i00: 15.0
+#   i01: 15.0
+#   i02: 15.0
+#   i10: 154.0
+#   i11: 154.0
+#   i12: 154.0
+#   i20: 154.0
+#   i21: 154.0
+#   i22: 15.0
+# mass: 0.2

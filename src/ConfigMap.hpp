@@ -40,6 +40,7 @@ namespace Json {
 }
 
 namespace configmaps {
+  class ConfigSchema;
 
   // only functions used from misc.h
   std::string trim(const std::string& str);
@@ -92,7 +93,7 @@ namespace configmaps {
      * @brief Create YAML representation of this ConfigMap to a YAML::Emmitter.
      * @param emitter The output emitter. (parameter gets modified!).
      */
-    virtual void dumpToYamlEmitter(YAML::Emitter &emitter) const;
+    virtual void dumpToYamlEmitter(YAML::Emitter &emitter) const override;
 
     /**
      * @brief Create Json representation of this ConfigMap to a Json::Value.
@@ -117,6 +118,12 @@ namespace configmaps {
       (*this)[key] = defaultValue;
       return defaultValue;
     }
+        /**
+    * @brief returns true if the current config map is valid according to the schema provided 
+     */
+    bool validate(ConfigMap &schema);
+    bool validate(ConfigSchema &schema);
+
 
   };
 } // end of namespace configmaps

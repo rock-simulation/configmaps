@@ -1,0 +1,60 @@
+# Schema
+name:
+  type: string
+weight:
+  type: number
+  minimum: 0
+  maximum: 100
+brand_new:
+  type: boolean
+size:
+  type: integer
+capabilities:
+  type: array
+  contains: 
+    type: object
+    properties:
+      chip_size:
+        type: integer
+        minimum: 10
+      ddr4:
+        type: boolean
+design:
+  type: object 
+  properties:
+    color: 
+      type: string
+    brand: 
+      type: string
+    address:
+      type: object
+      properties:
+        house: 
+          type: integer
+        contact:
+          type: object
+          properties:
+            email:
+              type: string
+            phone:
+              type: string
+ints:
+  type: array
+  contains: 
+    type: integer
+    minimum: 0
+    maximum: 100
+
+objects:
+  type: array
+  contains:
+    type: object
+    properties:
+      title: 
+        type: string
+      description: 
+        type: string
+      is_new: 
+        type: boolean
+      id: 
+        type: integer
