@@ -23,7 +23,7 @@ if(Catch_FOUND)
   catch_discover_tests(configmaps_test)
 endif()
 
-add_custom_target(test
+add_custom_target(run_test
     COMMAND ${CMAKE_CURRENT_BINARY_DIR}/configmaps_test
     DEPENDS configmaps
 )
