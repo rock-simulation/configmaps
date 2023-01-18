@@ -70,13 +70,6 @@ install(TARGETS configmaps EXPORT configmaps-targets
   ARCHIVE DESTINATION lib
 )
 
-# Install the library into the lib folder
-install(TARGETS configmaps 
-  RUNTIME DESTINATION bin
-  LIBRARY DESTINATION ${LIB_INSTALL_DIR}
-  ARCHIVE DESTINATION lib
-)
-
 # Install headers into mars include directory
 install(FILES ${HEADERS} DESTINATION include/configmaps)
 
