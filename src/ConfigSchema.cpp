@@ -16,7 +16,7 @@ const std::map<std::string, std::vector<int>> ConfigSchema::SCHEMA_ATOM_TYPES = 
 ConfigSchema::ConfigSchema(const ConfigMap &schema) : m_schema(schema) {}
 ConfigSchema::ConfigSchema() {}
 
-bool ConfigSchema::validate(ConfigMap &config)
+bool ConfigSchema::validate(ConfigMap &config, bool allow_extra)
 {
     // Check if we have a non-empty config first
     if (config.empty())
@@ -27,9 +27,10 @@ bool ConfigSchema::validate(ConfigMap &config)
         return false;
 
     // Validate extra keys
-    if (has_extra_keys(config, m_schema))
-        return false;
-
+    if(!allow_extra)
+        if(this->has_extra_keys(config, m_schema))
+            return false;
+         
     // Validate value types
     if (not validate_types(config, m_schema))
         return false;

@@ -36,9 +36,10 @@ namespace configmaps
          * @brief Validates a ConfigMap whether its respecting this schema or not
          * 
          * @param config: ConfigMap config data
+         * @param allow_extra: allow extra keys in the config
          * @return true if the config respects this schema, otherwise false.
          */
-        bool validate(ConfigMap &config);
+        bool validate(ConfigMap &config,bool allow_extra = true);
 
     private:
         ConfigMap m_schema;
