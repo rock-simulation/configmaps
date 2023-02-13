@@ -86,3 +86,16 @@ Assign value to std::string is ambiguous:
    d << map["some_value"];
    map["another_value"] << 3.14;
 ```
+
+#### CMAKE 
+
+To use this library from a CMake project, it should be locatable directly with `find_package()` and the namespaced imported target from the generated package configuration should be used:
+
+```cmake
+# CMakeLists.txt
+find_package(configmaps REQUIRED)
+...
+add_library(foo ...)
+...
+target_link_libraries(foo PRIVATE configmaps::configmaps)
+```

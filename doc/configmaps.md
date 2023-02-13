@@ -30,7 +30,8 @@ Yaml example file:
 Example program:
 
 ```cpp
-    #include <configmaps/ConfigData.h>
+    #include <configmaps/ConfigMap.hpp>
+    #include <configmaps/ConfigVector.hpp>
 
     int main(int argc, char *argv[]) {
 
