@@ -16,7 +16,7 @@ const std::map<std::string, std::vector<int>> ConfigSchema::SCHEMA_ATOM_TYPES = 
 ConfigSchema::ConfigSchema(const ConfigMap &schema) : m_schema(schema) {}
 ConfigSchema::ConfigSchema() {}
 
-bool ConfigSchema::validate(ConfigMap &config, bool allow_extra)
+bool ConfigSchema::validate(ConfigMap &config)
 {
     // Check if we have a non-empty config first
     if (config.empty())
@@ -26,11 +26,6 @@ bool ConfigSchema::validate(ConfigMap &config, bool allow_extra)
     if (not validate_keys(config, m_schema))
         return false;
 
-    // Validate extra keys
-    if(!allow_extra)
-        if(this->has_extra_keys(config, m_schema))
-            return false;
-         
     // Validate value types
     if (not validate_types(config, m_schema))
         return false;
@@ -62,11 +57,26 @@ bool ConfigSchema::validate_keys(ConfigMap &config, ConfigMap &schema)
 {
     for (auto const &[key, value] : schema)
     {
-        // Check if all keys in schema exist in our config
-        if (not config.hasKey(key))
+        // Check if required keys in schema exist in our config
+        if (value.hasKey("required"))
         {
-            std::cerr << "ConfigSchema::validate_keys: Missing \"" << key << "\" from config" << std::endl;
-            return false;
+            if ((bool)value["required"] == true)
+            {
+                // there is a required field with a true value,
+                // that means, schema 'key' MUST exist in 'config'
+                if (not config.hasKey(key))
+                {
+                    std::cerr << "ConfigSchema::validate_keys: Missing required field \"" << key << "\" from config" << std::endl;
+                    return false;
+                }
+            }
+        }
+        else
+        {
+            // If there is no required field, it's by default false (not required)
+            // So if it doesn't exist in the config, there is no need to validate it
+            if (not config.hasKey(key))
+                continue;
         }
         // Take the opportunity to validate schema keys
         // Check if we have a type field in schema, its mandatory..
@@ -133,44 +143,13 @@ bool ConfigSchema::validate_keys(ConfigMap &config, ConfigMap &schema)
     return true;
 }
 
-bool ConfigSchema::has_extra_keys(ConfigMap &config, ConfigMap &schema)
-{
-    for (auto const &[key, value] : config)
-    {
-        if (not schema.hasKey(key))
-        {
-            std::cerr << "ConfigSchema::has_extra_keys: Extra key \"" << key << "\" is not allowed" << std::endl;
-            return true;
-        }
-        // obj{}
-        if (value.isMap())
-        {
-            ConfigMap sub_schema = schema[key]["properties"];
-            if (has_extra_keys(value, sub_schema))
-            {
-                return true;
-            }
-        }
-        // [obj{}, obj{}, obj{}]
-        else if (value.isVector() and schema[key]["contains"]["type"] == "object")
-        {
-            for (ConfigItem &obj : value)
-            {
-                ConfigMap sub_schema = schema[key]["contains"]["properties"];
-                if (has_extra_keys(obj, sub_schema))
-                {
-                    return true;
-                }
-            }
-        }
-    }
-    return false;
-}
-
 bool ConfigSchema::validate_types(ConfigMap &config, ConfigMap &schema)
 {
     for (auto const &[key, value] : schema)
     {
+        if (not config.hasKey(key))
+            continue; // A not required field, doesn't seem to exist. skip it.
+
         // Check first if the desired schema type is known
         if (not is_known_type(value["type"]))
         {
@@ -197,8 +176,6 @@ bool ConfigSchema::validate_types(ConfigMap &config, ConfigMap &schema)
         // Validate sub objects within the array if any [obj{}, obj{}, ...]
         else if (config[key].isVector())
         {
-                 std::cout << "isVector schema: " << value.toYamlString() << std::endl;
-
             for (ConfigItem &o : config[key])
             {
                 if (value["contains"]["type"] == "object")
@@ -268,7 +245,7 @@ bool ConfigSchema::validate_constraints(ConfigMap &config, const std::string &ke
         {
             if (value > maximum)
             {
-                std::cerr << "ConfigSchema::validate_constraints: value " << value << " is out of range [" << (schema["minimum"].getOrCreateAtom()->getType() == ConfigAtom::DOUBLE_TYPE ? std::numeric_limits<double>::min() : std::numeric_limits<int>::min())  << ", " << maximum << "] in \"" << key << '\"' << std::endl;
+                std::cerr << "ConfigSchema::validate_constraints: value " << value << " is out of range [" << (schema["minimum"].getOrCreateAtom()->getType() == ConfigAtom::DOUBLE_TYPE ? std::numeric_limits<double>::min() : std::numeric_limits<int>::min()) << ", " << maximum << "] in \"" << key << '\"' << std::endl;
                 return false;
             }
         }

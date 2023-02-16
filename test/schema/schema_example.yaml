@@ -1,14 +1,18 @@
 # Schema
 name:
   type: string
+  required: false
 weight:
   type: number
+  required: true
   minimum: 0
   maximum: 100
 brand_new:
   type: boolean
+  required: true
 size:
   type: integer
+  required: true
 capabilities:
   type: array
   contains: 

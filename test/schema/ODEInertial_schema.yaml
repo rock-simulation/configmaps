@@ -1,5 +1,6 @@
 # Schema
 inertia:
+    required: True
     type: object
     properties:
       i00:
@@ -21,15 +22,18 @@ inertia:
       i22:
         type: number
 mass:
+    required: True
     type: number
     minimum: 0.0
 design:
-  type: object 
+  type: object
+  required: True 
   properties:
     color: 
       type: string
     address:
       type: object 
+      required: True
       properties:
         house: 
           type: integer
@@ -40,6 +44,10 @@ design:
               type: string
             phone:
               type: string
+  required:
+    - color
+    - address
+
 objects:
   type: array
   contains:

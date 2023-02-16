@@ -36,10 +36,9 @@ namespace configmaps
          * @brief Validates a ConfigMap whether its respecting this schema or not
          * 
          * @param config: ConfigMap config data
-         * @param allow_extra: allow extra keys in the config
          * @return true if the config respects this schema, otherwise false.
          */
-        bool validate(ConfigMap &config,bool allow_extra = true);
+        bool validate(ConfigMap &config);
 
     private:
         ConfigMap m_schema;
@@ -51,7 +50,6 @@ namespace configmaps
         bool is_known_type(const std::string &type);
 
         bool validate_keys(ConfigMap &config, ConfigMap& schema);
-        bool has_extra_keys(ConfigMap &config, ConfigMap& schema);
 
         bool validate_types(ConfigMap &config, ConfigMap& schema);
 
