@@ -269,33 +269,28 @@ namespace configmaps {
       type = UNDEFINED_TYPE;
     }
 
-    inline std::string toString() const {
-      char text[64];
+  inline std::string toString() const {
+  if (type == UNDEFINED_TYPE) {
+    return sValue;
+  } else if (type == INT_TYPE) {
+    return std::to_string(iValue);
+  } else if (type == UINT_TYPE) {
+    return std::to_string(uValue);
+  } else if (type == DOUBLE_TYPE) {
+    return std::to_string(dValue);
+  } else if (type == ULONG_TYPE) {
+    return std::to_string(luValue);
+  } else if (type == STRING_TYPE) {
+    return sValue;
+  } else if (type == BOOL_TYPE) {
+    return iValue ? "true" : "false";
 
-      if(type == UNDEFINED_TYPE) {
-        return sValue;
-      } else if(type == INT_TYPE) {
-        sprintf(text, "%d", iValue);
-        return text;
-      } else if(type == UINT_TYPE) {
-        sprintf(text, "%u", uValue);
-        return text;
-      } else if(type == DOUBLE_TYPE) {
-        sprintf(text, "%g", dValue);
-        return text;
-      } else if(type == ULONG_TYPE) {
-        sprintf(text, "%lu", luValue);
-        return text;
-      } else if(type == STRING_TYPE) {
-        return sValue;
-      } else if(type == BOOL_TYPE) {
-        if(iValue) return "true";
-        else return "false";
-      }
-      return std::string();
-    }
+  }
+  return "";
+}
 
-    virtual void dumpToYamlEmitter(YAML::Emitter &emitter) const {
+
+    virtual void dumpToYamlEmitter(YAML::Emitter &emitter) const override {
       std::string s = toString();
       if(ConfigBase::debugLevel >= 1) {
         fprintf(stderr, "dump: %s\n", s.c_str());
@@ -303,13 +298,19 @@ namespace configmaps {
       emitter << s;
     }
 
-    virtual void dumpToJsonValue(Json::Value &root) const {
-      std::string s = toString();
-      if(ConfigBase::debugLevel >= 1) {
-        fprintf(stderr, "dump: %s\n", s.c_str());
-      }
-      root = s;
-    }
+ virtual void dumpToJsonValue(Json::Value &root) const override {
+  if (type == BOOL_TYPE) {
+    root = iValue != 0;
+  } else {
+    root = toString();
+  }
+
+  if (ConfigBase::debugLevel >= 1) {
+    std::cout << "dump: " << root << std::endl;
+  }
+}
+
+
 
   private:
     unsigned long luValue;
@@ -356,23 +357,25 @@ namespace configmaps {
       return parsed = true;
     }
 
-    inline bool parseBool() {
-      if(type != UNDEFINED_TYPE) {
-        throw std::runtime_error("ConfigAtom parsing wrong type line ...");
-      }
-      sValue = trim(sValue);
-      if(sValue == "true" || sValue == "True" || sValue == "TRUE") {
-        iValue = 1;
-        return parsed = true;
-      }
+  inline bool parseBool() {
+  if(type != UNDEFINED_TYPE) {
+    throw std::runtime_error("ConfigAtom parsing wrong type line ...");
+  }
+  sValue = trim(sValue);
+  if(sValue == "true" || sValue == "True" || sValue == "TRUE") {
+    iValue = true;
+    return parsed = true;
+  }
 
-      if(sValue == "false" || sValue == "False" || sValue == "FALSE") {
-        iValue = 0;
-        return parsed = true;
-      }
+  if(sValue == "false" || sValue == "False" || sValue == "FALSE") {
+    iValue = false;
+    return parsed = true;
+  }
 
-      return parsed = sscanf(sValue.c_str(), "%d", &iValue);
-    }
+  return  parsed = sscanf(sValue.c_str(), "%d", &iValue);
+}
+
+
   };
 
 } // end of namespace configmaps

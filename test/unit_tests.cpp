@@ -6,6 +6,25 @@
 #include <iostream>
 using namespace configmaps;
 
+TEST_CASE("ConfigMap", "boolean")
+{
+
+    ConfigMap map;
+    map["abstract_positive"] = "true"; 
+    map["abstract_negative"] = "false"; 
+    REQUIRE((bool)map["abstract_positive"] == true);
+    REQUIRE((bool)map["abstract_negative"] == false);
+
+    map["abstract_literal"] = ConfigAtom(true); 
+    REQUIRE((bool)map["abstract_literal"] == true);
+
+    map["abstract_literal"] = ConfigAtom(false); 
+    REQUIRE((bool)map["abstract_literal"] == false);
+
+    ConfigMap recovered = ConfigMap::fromJsonString(map.toJsonString());
+    REQUIRE((bool)recovered["abstract_positive"] == true);
+    REQUIRE((bool)recovered["abstract_negative"] == false);
+}
 
 TEST_CASE("ConfigSchema", "validate")
 {
