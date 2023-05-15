@@ -290,7 +290,7 @@ namespace configmaps {
 }
 
 
-    virtual void dumpToYamlEmitter(YAML::Emitter &emitter) const {
+    virtual void dumpToYamlEmitter(YAML::Emitter &emitter) const override {
       std::string s = toString();
       if(ConfigBase::debugLevel >= 1) {
         fprintf(stderr, "dump: %s\n", s.c_str());
@@ -298,7 +298,7 @@ namespace configmaps {
       emitter << s;
     }
 
- virtual void dumpToJsonValue(Json::Value &root) const {
+ virtual void dumpToJsonValue(Json::Value &root) const override {
   if (type == BOOL_TYPE) {
     root = iValue != 0;
   } else {
@@ -372,7 +372,7 @@ namespace configmaps {
     return parsed = true;
   }
 
-  return parsed = false;
+  return  parsed = sscanf(sValue.c_str(), "%d", &iValue);
 }
 
 
