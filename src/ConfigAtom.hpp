@@ -46,32 +46,32 @@ namespace configmaps {
                    parsed(false), type(UNDEFINED_TYPE) {}
 
 
-    ConfigAtom(int val) : luValue(0), iValue(val),
+    explicit ConfigAtom(int val) : luValue(0), iValue(val),
                           uValue(0), dValue(0.0),
                           parsed(true), type(INT_TYPE) {}
 
-    ConfigAtom(bool val) : luValue(0), iValue(val),
+    explicit ConfigAtom(bool val) : luValue(0), iValue(val),
                            uValue(0), dValue(0.0),
                            parsed(true), type(BOOL_TYPE) {}
 
-    ConfigAtom(unsigned int val) : luValue(0), iValue(0),
+    explicit ConfigAtom(unsigned int val) : luValue(0), iValue(0),
                                    uValue(val), dValue(0.0),
                                    parsed(true), type(UINT_TYPE) {}
 
-    ConfigAtom(double val) : luValue(0), iValue(0),
+    explicit ConfigAtom(double val) : luValue(0), iValue(0),
                              uValue(0), dValue(val),
                              parsed(true), type(DOUBLE_TYPE) {}
 
-    ConfigAtom(unsigned long val) : luValue(val), iValue(0),
+    explicit ConfigAtom(unsigned long val) : luValue(val), iValue(0),
                                     uValue(0), dValue(0.0),
                                     parsed(true), type(ULONG_TYPE) {}
 
-    ConfigAtom(std::string val) : luValue(0), iValue(0),
+    explicit ConfigAtom(std::string val) : luValue(0), iValue(0),
                                   uValue(0), dValue(0.0),
                                   sValue(val.c_str()), parsed(false),
                                   type(UNDEFINED_TYPE) {}
 
-    ConfigAtom(const char *val) : luValue(0), iValue(0),
+    explicit ConfigAtom(const char *val) : luValue(0), iValue(0),
                                   uValue(0), dValue(0.0),
                                   sValue(val), parsed(false),
                                   type(UNDEFINED_TYPE) {}
@@ -299,8 +299,20 @@ namespace configmaps {
     }
 
  virtual void dumpToJsonValue(Json::Value &root) const override {
-  if (type == BOOL_TYPE) {
-    root = iValue != 0;
+  if (type == UNDEFINED_TYPE) {
+      root =  sValue;
+  } else if (type == INT_TYPE) {
+      root =  iValue;
+  } else if (type == UINT_TYPE) {
+    root = uValue;
+  } else if (type == DOUBLE_TYPE) {
+    root = dValue;
+  } else if (type == ULONG_TYPE) {
+    root = static_cast<Json::UInt64>(luValue);
+  } else if (type == STRING_TYPE) {
+    root = sValue;
+  } else if (type == BOOL_TYPE) {
+    root = static_cast<bool>(iValue);
   } else {
     root = toString();
   }

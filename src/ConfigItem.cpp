@@ -68,7 +68,18 @@ namespace configmaps {
       item = new ConfigMap(v);
     }
     else {
-      item = new ConfigAtom(v);
+      if(v.isInt())         item = new ConfigAtom(v.asInt());
+      else if(v.isBool())   item = new ConfigAtom(v.asBool());
+      else if(v.isUInt())   item = new ConfigAtom(v.asUInt());
+      else if(v.isDouble()) item = new ConfigAtom(v.asDouble());
+      else if(v.isUInt64()) item = new ConfigAtom(static_cast<unsigned long>(v.asUInt64()));
+      else if(v.isString()) item = new ConfigAtom(v.asString());
+      else {
+        char error[128];
+        sprintf(error, "Could not create ConfigItem from unknown Json::Value type! %d", v.type());
+        fprintf(stderr, "%s\n", error);
+        throw std::runtime_error(error);
+      }
     }
   }
 

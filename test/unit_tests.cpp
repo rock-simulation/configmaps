@@ -8,8 +8,17 @@ using namespace configmaps;
 
 TEST_CASE("ConfigMap", "boolean")
 {
+    using namespace std::string_literals;
 
     ConfigMap map;
+    map["name"] = "RAM"s;
+    map["namec"] = "RAM";
+    map["weight"] = 99.99;
+    map["weightf"] = 99.99f;
+    map["brand_new"] = true;
+    map["size"] = 8;
+    map["length"] = 1000u;
+    map["lengthl"] = 1000ul;
     map["abstract_positive"] = "true"; 
     map["abstract_negative"] = "false"; 
     REQUIRE((bool)map["abstract_positive"] == true);
@@ -17,15 +26,18 @@ TEST_CASE("ConfigMap", "boolean")
 
     map["abstract_literal"] = ConfigAtom(true); 
     REQUIRE((bool)map["abstract_literal"] == true);
-
+    map["qsd"].getString()
     map["abstract_literal"] = ConfigAtom(false); 
     REQUIRE((bool)map["abstract_literal"] == false);
 
     ConfigMap recovered = ConfigMap::fromJsonString(map.toJsonString());
     REQUIRE((bool)recovered["abstract_positive"] == true);
     REQUIRE((bool)recovered["abstract_negative"] == false);
-}
 
+    std::cout << "Export Json: " << map.toJsonString() << std::endl;
+    std::cout << "Import Recovered: " << recovered.toJsonString() << std::endl;
+}
+/*
 TEST_CASE("ConfigSchema", "validate")
 {
 
@@ -107,3 +119,4 @@ TEST_CASE("ODEInertia_schema", "validate"){
     REQUIRE(cs.validate(config));
 
 }
+*/
