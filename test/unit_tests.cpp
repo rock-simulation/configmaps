@@ -8,23 +8,22 @@ using namespace configmaps;
 
 TEST_CASE("ConfigMap", "boolean")
 {
-    using namespace std::string_literals;
-
     ConfigMap map;
-    map["name"] = "RAM"s;
+    map["name"] = std::string("RAM");
     map["namec"] = "RAM";
     map["weight"] = 99.99;
     map["weightf"] = 99.99f;
+    map["weightlf"] = 99.99lf;
     map["brand_new"] = true;
     map["size"] = 8;
-    map["length"] = 1000u;
-    map["lengthl"] = 1000ul;
-    map["abstract_positive"] = "true"; 
-    map["abstract_negative"] = "false"; 
+    map["lengthu"] = 1000u;
+    map["lengthul"] = 1000ul;
+    map["abstract_positive"] = "true";
+    map["abstract_negative"] = "false";
     REQUIRE((bool)map["abstract_positive"] == true);
     REQUIRE((bool)map["abstract_negative"] == false);
 
-    map["abstract_literal"] = ConfigAtom(true); 
+    map["abstract_literal"] = ConfigAtom(true);
     REQUIRE((bool)map["abstract_literal"] == true);
     map["abstract_literal"] = ConfigAtom(false);
     REQUIRE((bool)map["abstract_literal"] == false);
@@ -39,7 +38,6 @@ TEST_CASE("ConfigMap", "boolean")
 
 TEST_CASE("ConfigSchema", "validate")
 {
-
     ConfigMap schema = ConfigMap::fromYamlFile("schema/schema_example.yaml");
     ConfigSchema cs(schema);
 

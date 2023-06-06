@@ -67,12 +67,14 @@ namespace configmaps {
     else if(v.isObject()) {
       item = new ConfigMap(v);
     }
-    else {
-      if(v.isInt())         item = new ConfigAtom(v.asInt());
-      else if(v.isBool())   item = new ConfigAtom(v.asBool());
+    else { 
+      // Workaround: double should be parsed first
+      // because Json::Value can treat values like 2.0 as Int.
+      if(v.isDouble())      item = new ConfigAtom(v.asDouble());
+      else if(v.isInt())    item = new ConfigAtom(v.asInt());
       else if(v.isUInt())   item = new ConfigAtom(v.asUInt());
-      else if(v.isDouble()) item = new ConfigAtom(v.asDouble());
       else if(v.isUInt64()) item = new ConfigAtom(static_cast<unsigned long>(v.asUInt64()));
+      else if(v.isBool())   item = new ConfigAtom(v.asBool());
       else if(v.isString()) item = new ConfigAtom(v.asString());
       else {
         char error[128];
