@@ -26,8 +26,7 @@ TEST_CASE("ConfigMap", "boolean")
 
     map["abstract_literal"] = ConfigAtom(true); 
     REQUIRE((bool)map["abstract_literal"] == true);
-    map["qsd"].getString()
-    map["abstract_literal"] = ConfigAtom(false); 
+    map["abstract_literal"] = ConfigAtom(false);
     REQUIRE((bool)map["abstract_literal"] == false);
 
     ConfigMap recovered = ConfigMap::fromJsonString(map.toJsonString());
@@ -37,7 +36,7 @@ TEST_CASE("ConfigMap", "boolean")
     std::cout << "Export Json: " << map.toJsonString() << std::endl;
     std::cout << "Import Recovered: " << recovered.toJsonString() << std::endl;
 }
-/*
+
 TEST_CASE("ConfigSchema", "validate")
 {
 
@@ -119,4 +118,3 @@ TEST_CASE("ODEInertia_schema", "validate"){
     REQUIRE(cs.validate(config));
 
 }
-*/
