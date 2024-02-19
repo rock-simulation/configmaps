@@ -302,7 +302,17 @@ namespace configmaps {
   if (type == BOOL_TYPE) {
     root = iValue != 0;
   } else {
-    root = toString();
+    auto str = toString();
+    if (str == "true" || str == "True" || str == "TRUE")
+    {
+      root = true;
+    }
+    else if (str == "false" || str == "False" || str == "FALSE")
+    {
+      root = false;
+    }
+    else
+      root = str;
   }
 
   if (ConfigBase::debugLevel >= 1) {
