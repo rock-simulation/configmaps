@@ -1,4 +1,13 @@
+## CI Status
+
+| Operating System | Build Status                                                                                  |
+|------------------|-----------------------------------------------------------------------------------------------|
+| Ubuntu (x64)     | [![CI Status](https://github.com/rock-simulation/configmaps/actions/workflows/ci.yml/badge.svg)](https://github.com//rock-simulation/configmaps/actions) |
+
+## Documentation
 Documentation can be found at [doc](doc/configmaps.md).
+
+## Migration Guide: Updating from Old to New ConfigMap API ## 
 
 In the restructured branch the internal representation is refactored. Instead
 of using the map/vector/map/vector principle we now have a map of ConfigItems
