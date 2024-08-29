@@ -2,6 +2,7 @@
 #include <map>
 #include <vector>
 #include "ConfigMap.hpp"
+#include "ConfigAtom.hpp"
 
 namespace configmaps
 {
@@ -42,7 +43,7 @@ namespace configmaps
 
     private:
         ConfigMap m_schema;
-        static const std::map<std::string, std::vector<int>> SCHEMA_ATOM_TYPES;
+        static const std::map<std::string, std::vector<ConfigAtom::ItemType>> SCHEMA_ATOM_TYPES;
         
     private:
         bool has_corresponding_type(ConfigItem &config_item, const std::string &type);
