@@ -217,12 +217,12 @@ bool ConfigSchema::validate_constraints(ConfigMap &config, const std::string &ke
         // Handle minimum constrains
         double minimum, maximum;
         if (schema.hasKey("minimum"))
-            minimum = schema["minimum"].getOrCreateAtom()->getType() == ConfigAtom::DOUBLE_TYPE ? (double)schema["minimum"] : static_cast<double>((int)(schema["minimum"]));
+            minimum = schema["minimum"].getOrCreateAtom()->testType(ConfigAtom::DOUBLE_TYPE) ? (double)schema["minimum"] : static_cast<double>((int)(schema["minimum"]));
         if (schema.hasKey("maximum"))
-            maximum = schema["maximum"].getOrCreateAtom()->getType() == ConfigAtom::DOUBLE_TYPE ? (double)schema["maximum"] : static_cast<double>((int)(schema["maximum"]));
+            maximum = schema["maximum"].getOrCreateAtom()->testType(ConfigAtom::DOUBLE_TYPE) ? (double)schema["maximum"] : static_cast<double>((int)(schema["maximum"]));
 
         // Check if the config item's value is in range [minimum, maximum]
-        double value = config[key].getOrCreateAtom()->getType() == ConfigAtom::DOUBLE_TYPE ? (double)config[key] : static_cast<double>((int)(config[key]));
+        double value = config[key].getOrCreateAtom()->testType(ConfigAtom::DOUBLE_TYPE) ? (double)config[key] : static_cast<double>((int)(config[key]));
         if (schema.hasKey("minimum") and schema.hasKey("maximum"))
         {
             // Check if minimum is less than maximum
@@ -241,7 +241,7 @@ bool ConfigSchema::validate_constraints(ConfigMap &config, const std::string &ke
         {
             if (value < minimum)
             {
-                std::cerr << "ConfigSchema::validate_constraints: value " << value << " is out of range [" << minimum << ", " << (schema["maximum"].getOrCreateAtom()->getType() == ConfigAtom::DOUBLE_TYPE ? std::numeric_limits<double>::max() : std::numeric_limits<int>::max()) << "] in \"" << key << '\"' << std::endl;
+                std::cerr << "ConfigSchema::validate_constraints: value " << value << " is out of range [" << minimum << ", " << (schema["maximum"].getOrCreateAtom()->testType(ConfigAtom::DOUBLE_TYPE) ? std::numeric_limits<double>::max() : std::numeric_limits<int>::max()) << "] in \"" << key << '\"' << std::endl;
                 return false;
             }
         }
@@ -249,7 +249,7 @@ bool ConfigSchema::validate_constraints(ConfigMap &config, const std::string &ke
         {
             if (value > maximum)
             {
-                std::cerr << "ConfigSchema::validate_constraints: value " << value << " is out of range [" << (schema["minimum"].getOrCreateAtom()->getType() == ConfigAtom::DOUBLE_TYPE ? std::numeric_limits<double>::min() : std::numeric_limits<int>::min()) << ", " << maximum << "] in \"" << key << '\"' << std::endl;
+                std::cerr << "ConfigSchema::validate_constraints: value " << value << " is out of range [" << (schema["minimum"].getOrCreateAtom()->testType(ConfigAtom::DOUBLE_TYPE) ? std::numeric_limits<double>::min() : std::numeric_limits<int>::min()) << ", " << maximum << "] in \"" << key << '\"' << std::endl;
                 return false;
             }
         }
