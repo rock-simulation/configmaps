@@ -1,0 +1,40 @@
+name: build
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+          run: |
+            sudo apt-get update
+            sudo apt-get install -y \
+              libyaml-cpp-dev \
+              libjsoncpp-dev \
+              libboost-all-dev
+
+      - name: Prepare build
+        run: |
+          mkdir build
+          cd build
+          cmake ..
+
+      - name: Build project
+        run: |
+          make -C build -j2
+
+      - name: Run Unit Tests
+      if: ${{ success() }}
+      run: |
+        cd build
+        ./test/configmaps_test  
