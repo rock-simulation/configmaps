@@ -6,7 +6,7 @@
 
 using namespace configmaps;
 
-const std::map<std::string, std::vector<int>> ConfigSchema::SCHEMA_ATOM_TYPES = {
+const std::map<std::string, std::vector<configmaps::ConfigAtom::ItemType>> ConfigSchema::SCHEMA_ATOM_TYPES = {
     {"integer", {ConfigAtom::INT_TYPE, ConfigAtom::UINT_TYPE, ConfigAtom::ULONG_TYPE}},
     {"string", {ConfigAtom::STRING_TYPE}},
     {"number", {ConfigAtom::DOUBLE_TYPE, ConfigAtom::INT_TYPE, ConfigAtom::UINT_TYPE, ConfigAtom::ULONG_TYPE}},
@@ -39,11 +39,15 @@ bool ConfigSchema::has_corresponding_type(ConfigItem &config_item, const std::st
         return config_item.isMap();
     if (type == "array")
         return config_item.isVector();
-    // TODO: for some reason ConfigAtom STRING_TYPE needs to be tested with testType() instead of getType() to detect its type..
-    if (type == "string")
-        return config_item.getOrCreateAtom()->testType(ConfigAtom::STRING_TYPE);
-    return std::find(SCHEMA_ATOM_TYPES.at(type).begin(), SCHEMA_ATOM_TYPES.at(type).end(),
-                     config_item.getOrCreateAtom()->getType()) != SCHEMA_ATOM_TYPES.at(type).end();
+    for(auto atomic_type : SCHEMA_ATOM_TYPES.at(type))
+    {
+        if(config_item.getOrCreateAtom()->testType(atomic_type))
+        {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 bool ConfigSchema::is_known_type(const std::string &type)
