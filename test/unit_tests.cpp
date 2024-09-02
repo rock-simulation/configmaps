@@ -254,7 +254,7 @@ TEST_CASE("min_max_tests", "checks valid and invalid values for integers and num
 
     { // invalid both int double low
         ConfigMap config;
-        config["both_int_doublevals"] = 5.4;
+        config["both_int_doublevals"] = 5;
         std::cout << "Config:\n" << config.toYamlString() << std::endl;
 
         REQUIRE(!cs.validate(config));
