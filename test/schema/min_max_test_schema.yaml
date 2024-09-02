@@ -1,0 +1,41 @@
+only_min_number_intmin:
+  type: number
+  minimum: 5
+only_min_number_doublemin:
+  type: number
+  minimum: 5.5
+only_min_int_intmin:
+  type: integer
+  minimum: 5
+only_min_int_doublemin:
+  type: integer
+  minimum: 5.5
+only_max_number_intmax:
+  type: number
+  maximum: 5
+only_max_number_doublemax:
+  type: number
+  maximum: 5.5
+only_max_int_intmax:
+  type: integer
+  maximum: 5
+only_max_int_doublemax:
+  type: integer
+  maximum: 5.5
+both_number_intvals:
+  type: number
+  minimum: 5
+  maximum: 10
+both_number_doublevals:
+  type: number
+  minimum: 5.5
+  maximum: 10.5
+both_int_intvals:
+  type: integer
+  minimum: 5
+  maximum: 10
+both_int_doublevals:
+  type: integer
+  minimum: 5.5
+  maximum: 10.5
+
