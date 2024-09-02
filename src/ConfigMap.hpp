@@ -80,7 +80,7 @@ namespace configmaps {
       return w;
     }
 
-    bool hasKey(std::string key);
+    bool hasKey(std::string key) const;
     void updateMap(ConfigMap &update);
 
     static ConfigMap fromYamlStream(std::istream &in);
