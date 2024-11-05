@@ -4,6 +4,8 @@ project(configmaps VERSION "0.1.0" DESCRIPTION "This library contains a C++ impl
 find_package(yaml-cpp REQUIRED)
 find_package(jsoncpp REQUIRED)
 
+link_directories(configmaps ${YAML_CPP_LIBRARY_DIR})
+
 # Export the library interface
 install(EXPORT configmaps-targets
 	NAMESPACE configmaps::
