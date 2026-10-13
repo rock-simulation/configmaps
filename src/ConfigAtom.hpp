@@ -33,6 +33,7 @@
 #include <json/json.h>
 #endif
 #include "ConfigBase.hpp"
+#include "ConfigMap.hpp"
 
 
 namespace configmaps {
