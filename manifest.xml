@@ -1,7 +1,8 @@
 <package>
     <description brief="configmaps">
-	This library contains a C++ implementation of python dictionary-like containers - ConfigMaps.
+    This library contains a C++ implementation of python dictionary-like containers - ConfigMaps.
     </description>
+    <license>LGPL-3.0-or-later</license>
     <depend package="base/cmake" />
     <depend package="yaml-cpp" />
     <depend package="jsoncpp" />
